@@ -1,0 +1,28 @@
+<idea-plugin version="2">
+	<id>org.consulo.emmet</id>
+	<name>Emmet</name>
+	<depends>com.intellij.xml</depends>
+
+	<extensionPoints>
+		<extensionPoint name="codingGenerator" interface="com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator"/>
+		<extensionPoint name="codingFilter" interface="com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter"/>
+	</extensionPoints>
+
+	<extensions defaultExtensionNs="org.consulo.emmet">
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.XslZenCodingFilter" />
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.CommentZenCodingFilter" />
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.EscapeZenCodingFilter" />
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.SingleLineEmmetFilter" />
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.BemEmmetFilter" />
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.TrimZenCodingFilter" />
+	</extensions>
+
+	<extensions defaultExtensionNs="com.intellij">
+		<applicationConfigurable provider="com.intellij.application.options.emmet.EmmetConfigurableProvider"/>
+		<applicationService serviceInterface="com.intellij.application.options.emmet.EmmetOptions"
+							serviceImplementation="com.intellij.application.options.emmet.EmmetOptions"/>
+		<exportable serviceInterface="com.intellij.application.options.emmet.EmmetOptions"/>
+
+		<customLiveTemplate implementation="com.intellij.codeInsight.template.emmet.ZenCodingTemplate"/>
+	</extensions>
+</idea-plugin>
