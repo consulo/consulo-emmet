@@ -15,12 +15,14 @@
  */
 package com.intellij.application.options.emmet;
 
+import com.intellij.application.options.editor.EditorOptionsProvider;
 import com.intellij.codeInsight.CodeInsightBundle;
 import com.intellij.codeInsight.template.impl.TemplateSettings;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
+import com.intellij.openapi.options.ex.ConfigurableWrapper;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.xml.XmlBundle;
 import org.jetbrains.annotations.Nls;
@@ -28,160 +30,105 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * User: zolotov
  * Date: 2/20/13
  */
-public class EmmetConfigurable implements SearchableConfigurable, Disposable, Configurable.NoScroll {
-  private JBCheckBox myEnableEmmetJBCheckBox;
-  private JComboBox myEmmetExpandShortcutCombo;
-  private JBCheckBox myEnableBEMFilterJBCheckBox;
-  private JBCheckBox myAutoInsertCssVendorJBCheckBox;
-  private JBCheckBox myEnabledFuzzySearchJBCheckBox;
-  private JPanel myPanel;
-  private JPanel myPrefixesPanel;
+public class EmmetConfigurable extends SearchableConfigurable.Parent.Abstract implements EditorOptionsProvider, Disposable {
+	private JBCheckBox myEnableEmmetJBCheckBox;
+	private JComboBox myEmmetExpandShortcutCombo;
 
-  private CssEditPrefixesListPanel myCssEditPrefixesListPanel;
+	private JPanel myPanel;
 
-  private static final String SPACE = CodeInsightBundle.message("template.shortcut.space");
-  private static final String TAB = CodeInsightBundle.message("template.shortcut.tab");
-  private static final String ENTER = CodeInsightBundle.message("template.shortcut.enter");
+	private static final String SPACE = CodeInsightBundle.message("template.shortcut.space");
+	private static final String TAB = CodeInsightBundle.message("template.shortcut.tab");
+	private static final String ENTER = CodeInsightBundle.message("template.shortcut.enter");
 
-  public EmmetConfigurable() {
-    myEnableEmmetJBCheckBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        boolean selected = myEnableEmmetJBCheckBox.isSelected();
-        myEmmetExpandShortcutCombo.setEnabled(selected);
-        //myInsertFallbackGradientColorJBCheckBox.setEnabled(selected);
-        myAutoInsertCssVendorJBCheckBox.setEnabled(selected);
-        myCssEditPrefixesListPanel.setEnabled(selected && myAutoInsertCssVendorJBCheckBox.isSelected());
-        myEnableBEMFilterJBCheckBox.setEnabled(selected);
-        myEnabledFuzzySearchJBCheckBox.setEnabled(selected);
-      }
-    });
+	public EmmetConfigurable() {
+		myEmmetExpandShortcutCombo.addItem(SPACE);
+		myEmmetExpandShortcutCombo.addItem(TAB);
+		myEmmetExpandShortcutCombo.addItem(ENTER);
+	}
 
-    myAutoInsertCssVendorJBCheckBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        myCssEditPrefixesListPanel.setEnabled(myAutoInsertCssVendorJBCheckBox.isSelected());
-      }
-    });
+	private char getSelectedEmmetExpandShortcut() {
+		Object selectedItem = myEmmetExpandShortcutCombo.getSelectedItem();
+		if (TAB.equals(selectedItem)) {
+			return TemplateSettings.TAB_CHAR;
+		} else if (ENTER.equals(selectedItem)) {
+			return TemplateSettings.ENTER_CHAR;
+		}
+		return TemplateSettings.SPACE_CHAR;
+	}
 
-    myEmmetExpandShortcutCombo.addItem(SPACE);
-    myEmmetExpandShortcutCombo.addItem(TAB);
-    myEmmetExpandShortcutCombo.addItem(ENTER);
-  }
+	@Override
+	public void dispose() {
+	}
 
-  private char getSelectedEmmetExpandShortcut() {
-    Object selectedItem = myEmmetExpandShortcutCombo.getSelectedItem();
-    if (TAB.equals(selectedItem)) {
-      return TemplateSettings.TAB_CHAR;
-    }
-    else if (ENTER.equals(selectedItem)) {
-      return TemplateSettings.ENTER_CHAR;
-    }
-    return TemplateSettings.SPACE_CHAR;
-  }
+	@NotNull
+	@Override
+	public String getId() {
+		return "emmet.application.settings";
+	}
 
-  @Override
-  public void dispose() {
-  }
+	@Override
+	protected Configurable[] buildConfigurables() {
+		List<EmmetOptionsProvider> configurables = ConfigurableWrapper.createConfigurables(EmmetOptionsProviderEP.EP_NAME);
+		return configurables.toArray(new Configurable[configurables.size()]);
+	}
 
-  @NotNull
-  @Override
-  public String getId() {
-    return "reference.idesettings.emmet";
-  }
+	@Override
+	public boolean hasOwnContent() {
+		return true;
+	}
 
-  @Nullable
-  @Override
-  public Runnable enableSearch(String option) {
-    return null;
-  }
+	@Nls
+	@Override
+	public String getDisplayName() {
+		return XmlBundle.message("emmet.configuration.title");
+	}
 
-  @Nls
-  @Override
-  public String getDisplayName() {
-    return XmlBundle.message("emmet.configuration.title");
-  }
+	@Nullable
+	@Override
+	public String getHelpTopic() {
+		return getId();
+	}
 
-  @Nullable
-  @Override
-  public String getHelpTopic() {
-    return getId();
-  }
+	@Nullable
+	@Override
+	public JComponent createComponent() {
+		return myPanel;
+	}
 
-  @Nullable
-  @Override
-  public JComponent createComponent() {
-    return myPanel;
-  }
-
-  @Override
-  public boolean isModified() {
-    EmmetOptions emmetOptions = EmmetOptions.getInstance();
-    return emmetOptions.isEmmetEnabled() != myEnableEmmetJBCheckBox.isSelected() ||
-           emmetOptions.isBemFilterEnabledByDefault() != myEnableBEMFilterJBCheckBox.isSelected() ||
-           emmetOptions.isAutoInsertCssPrefixedEnabled() != myAutoInsertCssVendorJBCheckBox.isSelected() ||
-           emmetOptions.isFuzzySearchEnabled() != myEnabledFuzzySearchJBCheckBox.isSelected() ||
-           !emmetOptions.getAllPrefixInfo().equals(myCssEditPrefixesListPanel.getState()) ||
-           emmetOptions.getEmmetExpandShortcut() != getSelectedEmmetExpandShortcut();
-  }
+	@Override
+	public boolean isModified() {
+		EmmetOptions emmetOptions = EmmetOptions.getInstance();
+		return emmetOptions.isEmmetEnabled() != myEnableEmmetJBCheckBox.isSelected() ||
+				emmetOptions.getEmmetExpandShortcut() != getSelectedEmmetExpandShortcut();
+	}
 
 
-  @Override
-  public void apply() throws ConfigurationException {
-    EmmetOptions emmetOptions = EmmetOptions.getInstance();
-    emmetOptions.setEmmetEnabled(myEnableEmmetJBCheckBox.isSelected());
-    emmetOptions.setBemFilterEnabledByDefault(myEnableBEMFilterJBCheckBox.isSelected());
-    emmetOptions.setEmmetExpandShortcut(getSelectedEmmetExpandShortcut());
-    emmetOptions.setAutoInsertCssPrefixedEnabled(myAutoInsertCssVendorJBCheckBox.isSelected());
-    emmetOptions.setFuzzySearchEnabled(myEnabledFuzzySearchJBCheckBox.isSelected());
-    emmetOptions.setPrefixInfo(myCssEditPrefixesListPanel.getState());
-  }
+	@Override
+	public void apply() throws ConfigurationException {
+		EmmetOptions emmetOptions = EmmetOptions.getInstance();
+		emmetOptions.setEmmetEnabled(myEnableEmmetJBCheckBox.isSelected());
+		emmetOptions.setEmmetExpandShortcut(getSelectedEmmetExpandShortcut());
+	}
 
-  @Override
-  public void reset() {
-    EmmetOptions emmetOptions = EmmetOptions.getInstance();
-    myEnableEmmetJBCheckBox.setSelected(emmetOptions.isEmmetEnabled());
-    myEnableBEMFilterJBCheckBox.setEnabled(emmetOptions.isEmmetEnabled());
-    myEnableBEMFilterJBCheckBox.setSelected(emmetOptions.isBemFilterEnabledByDefault());
-    myEmmetExpandShortcutCombo.setEnabled(emmetOptions.isEmmetEnabled());
-    myAutoInsertCssVendorJBCheckBox.setEnabled(emmetOptions.isEmmetEnabled());
-    myAutoInsertCssVendorJBCheckBox.setSelected(emmetOptions.isAutoInsertCssPrefixedEnabled());
-    myEnabledFuzzySearchJBCheckBox.setEnabled(emmetOptions.isEmmetEnabled());
-    myEnabledFuzzySearchJBCheckBox.setSelected(emmetOptions.isFuzzySearchEnabled());
-    //myInsertFallbackGradientColorJBCheckBox.setEnabled(emmetOptions.isEmmetEnabled());
-    //myInsertFallbackGradientColorJBCheckBox.setSelected(emmetOptions.isInsertFallbackGradientColorEnabled());
+	@Override
+	public void reset() {
+		EmmetOptions emmetOptions = EmmetOptions.getInstance();
+		myEnableEmmetJBCheckBox.setSelected(emmetOptions.isEmmetEnabled());
+		myEmmetExpandShortcutCombo.setEnabled(emmetOptions.isEmmetEnabled());
 
-    myCssEditPrefixesListPanel.setEnabled(emmetOptions.isEmmetEnabled() && emmetOptions.isAutoInsertCssPrefixedEnabled());
-    myCssEditPrefixesListPanel.setState(emmetOptions.getAllPrefixInfo());
-
-    char shortcut = (char)emmetOptions.getEmmetExpandShortcut();
-    if (shortcut == TemplateSettings.TAB_CHAR) {
-      myEmmetExpandShortcutCombo.setSelectedItem(TAB);
-    }
-    else if (shortcut == TemplateSettings.ENTER_CHAR) {
-      myEmmetExpandShortcutCombo.setSelectedItem(ENTER);
-    }
-    else {
-      myEmmetExpandShortcutCombo.setSelectedItem(SPACE);
-    }
-  }
-
-  @Override
-  public void disposeUIResources() {
-    myCssEditPrefixesListPanel = null;
-    myPrefixesPanel = null;
-  }
-
-  private void createUIComponents() {
-    myCssEditPrefixesListPanel = new CssEditPrefixesListPanel();
-    myPrefixesPanel = myCssEditPrefixesListPanel.createMainComponent();
-    myPrefixesPanel.setEnabled(true);
-  }
+		char shortcut = (char) emmetOptions.getEmmetExpandShortcut();
+		if (shortcut == TemplateSettings.TAB_CHAR) {
+			myEmmetExpandShortcutCombo.setSelectedItem(TAB);
+		} else if (shortcut == TemplateSettings.ENTER_CHAR) {
+			myEmmetExpandShortcutCombo.setSelectedItem(ENTER);
+		} else {
+			myEmmetExpandShortcutCombo.setSelectedItem(SPACE);
+		}
+	}
 }

@@ -6,6 +6,11 @@
 	<extensionPoints>
 		<extensionPoint name="codingGenerator" interface="com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator"/>
 		<extensionPoint name="codingFilter" interface="com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter"/>
+
+		<extensionPoint name="optionsProvider" beanClass="com.intellij.application.options.emmet.EmmetOptionsProviderEP">
+			<with attribute="instance" implements="com.intellij.application.options.emmet.EmmetOptionsProvider"/>
+		</extensionPoint>
+
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="org.consulo.emmet">
@@ -15,13 +20,28 @@
 		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.SingleLineEmmetFilter" />
 		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.BemEmmetFilter" />
 		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.TrimZenCodingFilter" />
+
+		<optionsProvider id="xml.emmet.application.settings"
+						 displayName="XML(HTML, etc)"
+						 instance="com.intellij.application.options.emmet.XmlEmmetConfigurable"/>
+
+		<optionsProvider id="css.emmet.application.settings"
+						 displayName="CSS"
+						 instance="com.intellij.application.options.emmet.CssEmmetConfigurable"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">
-		<applicationConfigurable provider="com.intellij.application.options.emmet.EmmetConfigurableProvider"/>
+		<editorOptionsProvider id="emmet.application.settings" order="last"
+								instance="com.intellij.application.options.emmet.EmmetConfigurable"/>
+
 		<applicationService serviceInterface="com.intellij.application.options.emmet.EmmetOptions"
 							serviceImplementation="com.intellij.application.options.emmet.EmmetOptions"/>
-		<exportable serviceInterface="com.intellij.application.options.emmet.EmmetOptions"/>
+
+		<applicationService serviceInterface="com.intellij.application.options.emmet.CssEmmetOptions"
+							serviceImplementation="com.intellij.application.options.emmet.CssEmmetOptions"/>
+
+		<applicationService serviceInterface="com.intellij.application.options.emmet.XmlEmmetOptions"
+							serviceImplementation="com.intellij.application.options.emmet.XmlEmmetOptions"/>
 
 		<customLiveTemplate implementation="com.intellij.codeInsight.template.emmet.ZenCodingTemplate"/>
 	</extensions>
