@@ -24,10 +24,6 @@
 		<optionsProvider id="xml.emmet.application.settings"
 						 displayName="XML(HTML, etc)"
 						 instance="com.intellij.application.options.emmet.XmlEmmetConfigurable"/>
-
-		<optionsProvider id="css.emmet.application.settings"
-						 displayName="CSS"
-						 instance="com.intellij.application.options.emmet.CssEmmetConfigurable"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">
@@ -37,8 +33,6 @@
 		<applicationService serviceInterface="com.intellij.application.options.emmet.EmmetOptions"
 							serviceImplementation="com.intellij.application.options.emmet.EmmetOptions"/>
 
-		<applicationService serviceInterface="com.intellij.application.options.emmet.CssEmmetOptions"
-							serviceImplementation="com.intellij.application.options.emmet.CssEmmetOptions"/>
 
 		<applicationService serviceInterface="com.intellij.application.options.emmet.XmlEmmetOptions"
 							serviceImplementation="com.intellij.application.options.emmet.XmlEmmetOptions"/>
