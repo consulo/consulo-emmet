@@ -6,9 +6,7 @@
         <element id="directory" name="lib">
           <element id="zip-archive" name="emmet.jar">
             <element id="module-output" name="consulo-emmet" />
-            <element id="directory" name="META-INF">
-              <element id="dir-copy" path="$PROJECT_DIR$/META-INF" />
-            </element>
+            <element id="module-production-resource-output" name="consulo-emmet" />
           </element>
         </element>
       </element>
