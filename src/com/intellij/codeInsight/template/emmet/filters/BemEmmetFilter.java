@@ -22,8 +22,11 @@ import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Iterables.getFirst;
 import static com.google.common.collect.Iterables.getLast;
 import static com.google.common.collect.Iterables.transform;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.newLinkedList;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -58,6 +61,7 @@ public class BemEmmetFilter extends ZenCodingFilter
 	private static final String MODIFIER_SEPARATOR = "_";
 	private static final String SHORT_ELEMENT_PREFIX = "-";
 
+	private static final Joiner ELEMENTS_JOINER = Joiner.on(ELEMENT_SEPARATOR).skipNulls();
 	private static final Splitter ELEMENTS_SPLITTER = Splitter.on(ELEMENT_SEPARATOR);
 	private static final Splitter MODIFIERS_SPLITTER = Splitter.on(MODIFIER_SEPARATOR).limit(2);
 	private static final Splitter CLASS_NAME_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
@@ -65,6 +69,7 @@ public class BemEmmetFilter extends ZenCodingFilter
 
 	private static final Function<String, String> CLASS_NAME_NORMALIZER = new Function<String, String>()
 	{
+		@NotNull
 		@Override
 		public String apply(@NotNull String input)
 		{
@@ -142,7 +147,7 @@ public class BemEmmetFilter extends ZenCodingFilter
 		return node;
 	}
 
-	private static Iterable<String> processClassName(String className, GenerationNode node)
+	private static Iterable<String> processClassName(String className, @NotNull GenerationNode node)
 	{
 		className = fillWithBemElements(className, node);
 		className = fillWithBemModifiers(className, node);
@@ -182,24 +187,35 @@ public class BemEmmetFilter extends ZenCodingFilter
 	@NotNull
 	private static BemState extractBemStateFromClassName(@NotNull String className)
 	{
-		BemState result = new BemState();
+		final BemState result = new BemState();
 		if(className.contains(ELEMENT_SEPARATOR))
 		{
-			List<String> blockElements = newLinkedList(ELEMENTS_SPLITTER.split(className));
-			result.setBlock(getFirst(blockElements, ""));
-			if(blockElements.size() > 1)
+			final Iterator<String> elementsIterator = ELEMENTS_SPLITTER.split(className).iterator();
+			result.setBlock(elementsIterator.next());
+
+			final Collection<String> elementParts = newLinkedList();
+			while(elementsIterator.hasNext())
 			{
-				List<String> elementModifiers = newLinkedList(MODIFIERS_SPLITTER.split(blockElements.get(1)));
-				result.setElement(getFirst(elementModifiers, ""));
-				if(elementModifiers.size() > 1)
+				final String elementPart = elementsIterator.next();
+				if(!elementsIterator.hasNext())
 				{
-					result.setModifier(getLast(elementModifiers, ""));
+					final List<String> elementModifiers = newArrayList(MODIFIERS_SPLITTER.split(elementPart));
+					elementParts.add(getFirst(elementModifiers, null));
+					if(elementModifiers.size() > 1)
+					{
+						result.setModifier(getLast(elementModifiers, ""));
+					}
+				}
+				else
+				{
+					elementParts.add(elementPart);
 				}
 			}
+			result.setElement(ELEMENTS_JOINER.join(elementParts));
 		}
 		else if(className.contains(MODIFIER_SEPARATOR))
 		{
-			Iterable<String> blockModifiers = MODIFIERS_SPLITTER.split(className);
+			final Iterable<String> blockModifiers = MODIFIERS_SPLITTER.split(className);
 			result.setBlock(getFirst(blockModifiers, ""));
 			result.setModifier(getLast(blockModifiers, ""));
 		}
@@ -381,6 +397,7 @@ public class BemEmmetFilter extends ZenCodingFilter
 			return isNullOrEmpty(block) && isNullOrEmpty(element) && isNullOrEmpty(modifier);
 		}
 
+		@Nullable
 		public BemState copy()
 		{
 			return new BemState(block, element, modifier);

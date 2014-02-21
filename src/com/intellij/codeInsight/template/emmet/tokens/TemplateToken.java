@@ -23,9 +23,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
+import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.undo.UndoConstants;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFileFactory;
@@ -98,6 +98,7 @@ public class TemplateToken extends ZenCodingToken
 			{
 				ApplicationManager.getApplication().runWriteAction(new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						addMissingAttributes(tag, getAttribute2Value());
@@ -125,7 +126,7 @@ public class TemplateToken extends ZenCodingToken
 	@NotNull
 	private static XmlFile parseXmlFileInTemplate(String templateString, CustomTemplateCallback callback, boolean createPhysicalFile)
 	{
-		XmlFile xmlFile = (XmlFile) PsiFileFactory.getInstance(callback.getProject()).createFileFromText("dummy.xml", StdFileTypes.XML, templateString,
+		XmlFile xmlFile = (XmlFile) PsiFileFactory.getInstance(callback.getProject()).createFileFromText("dummy.xml", XmlFileType.INSTANCE, templateString,
 				LocalTimeCounter.currentTime(), createPhysicalFile);
 		VirtualFile vFile = xmlFile.getVirtualFile();
 		if(vFile != null)
@@ -174,6 +175,7 @@ public class TemplateToken extends ZenCodingToken
 		return myTemplate;
 	}
 
+	@Override
 	public String toString()
 	{
 		return "TEMPLATE";

@@ -29,6 +29,12 @@ public abstract class ZenCodingFilter
 	public static final ExtensionPointName<ZenCodingFilter> EP_NAME = new ExtensionPointName<ZenCodingFilter>("org.consulo.emmet.codingFilter");
 
 	@NotNull
+	public static ZenCodingFilter[] getInstances()
+	{
+		return EP_NAME.getExtensions();
+	}
+
+	@NotNull
 	public String filterText(@NotNull String text, @NotNull TemplateToken token)
 	{
 		return text;

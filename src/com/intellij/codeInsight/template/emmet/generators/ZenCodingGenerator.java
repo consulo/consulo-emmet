@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2010 JetBrains s.r.o.
+ * Copyright 2000-2013 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,12 @@ import com.intellij.codeInsight.template.emmet.tokens.ZenCodingToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.extensions.ExtensionPointName;
+import com.intellij.openapi.options.UnnamedConfigurable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.xml.XmlTokenType;
 
 
@@ -44,6 +46,7 @@ public abstract class ZenCodingGenerator
 {
 	private static final ExtensionPointName<ZenCodingGenerator> EP_NAME = new ExtensionPointName<ZenCodingGenerator>("org.consulo.emmet" +
 			".codingGenerator");
+	private static final TokenSet VALID_LEAF_TYPES = TokenSet.create(XmlTokenType.XML_DATA_CHARACTERS, XmlTokenType.XML_CHAR_ENTITY_REF);
 
 	public abstract TemplateImpl generateTemplate(@NotNull TemplateToken token, boolean hasChildren, @NotNull PsiElement context);
 
@@ -63,6 +66,8 @@ public abstract class ZenCodingGenerator
 
 	public abstract boolean isAppliedByDefault(@NotNull PsiElement context);
 
+	public abstract boolean isEnabled();
+
 	public static List<ZenCodingGenerator> getInstances()
 	{
 		List<ZenCodingGenerator> generators = new ArrayList<ZenCodingGenerator>();
@@ -75,6 +80,8 @@ public abstract class ZenCodingGenerator
 	public String computeTemplateKey(@NotNull CustomTemplateCallback callback)
 	{
 		Editor editor = callback.getEditor();
+		final int currentOffset = editor.getCaretModel().getOffset();
+		final CharSequence documentText = editor.getDocument().getCharsSequence();
 		PsiElement element = callback.getContext();
 		int line = editor.getCaretModel().getLogicalPosition().line;
 		int lineStart = editor.getDocument().getLineStartOffset(line);
@@ -82,7 +89,7 @@ public abstract class ZenCodingGenerator
 		do
 		{
 			PsiElement e = element;
-			while((e instanceof LeafPsiElement && ((LeafPsiElement) e).getElementType() == XmlTokenType.XML_DATA_CHARACTERS) ||
+			while((e instanceof LeafPsiElement && VALID_LEAF_TYPES.contains(((LeafPsiElement) e).getElementType())) ||
 					e instanceof PsiWhiteSpace || e instanceof PsiErrorElement)
 			{
 				elementStart = e.getTextRange().getStartOffset();
@@ -90,8 +97,8 @@ public abstract class ZenCodingGenerator
 			}
 			if(elementStart >= 0)
 			{
-				int startOffset = elementStart > lineStart ? elementStart : lineStart;
-				String key = computeKey(editor, startOffset);
+				int startOffset = Math.max(elementStart, lineStart);
+				String key = computeKey(startOffset, currentOffset, documentText);
 				if(key != null)
 				{
 					while(key.length() > 0 && !ZenCodingTemplate.checkTemplateKey(key, callback, this))
@@ -111,10 +118,13 @@ public abstract class ZenCodingGenerator
 	}
 
 	@Nullable
-	protected static String computeKey(Editor editor, int startOffset)
+	protected static String computeKey(int startOffset, int currentOffset, CharSequence documentText)
 	{
-		int offset = editor.getCaretModel().getOffset();
-		String s = editor.getDocument().getCharsSequence().subSequence(startOffset, offset).toString();
+		if(currentOffset < startOffset || startOffset > documentText.length() || currentOffset > documentText.length())
+		{
+			return null;
+		}
+		String s = documentText.subSequence(startOffset, currentOffset).toString();
 		int index = 0;
 		while(index < s.length() && Character.isWhitespace(s.charAt(index)))
 		{
@@ -192,5 +202,16 @@ public abstract class ZenCodingGenerator
 			boolean surroundWithTemplate)
 	{
 		return new XmlEmmetParser(tokens, callback, generator, surroundWithTemplate);
+	}
+
+	@Nullable
+	public UnnamedConfigurable createConfigurable()
+	{
+		return null;
+	}
+
+	public boolean hasCompletionItem()
+	{
+		return false;
 	}
 }

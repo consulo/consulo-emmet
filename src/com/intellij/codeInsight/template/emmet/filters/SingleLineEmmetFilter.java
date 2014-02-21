@@ -17,8 +17,10 @@ package com.intellij.codeInsight.template.emmet.filters;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
+import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.lang.xml.XMLLanguage;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -32,6 +34,13 @@ public class SingleLineEmmetFilter extends ZenCodingFilter
 	public String getSuffix()
 	{
 		return "s";
+	}
+
+	@NotNull
+	@Override
+	public String filterText(@NotNull String text, @NotNull TemplateToken token)
+	{
+		return StringUtil.replace(text, "\n", "");
 	}
 
 	@NotNull

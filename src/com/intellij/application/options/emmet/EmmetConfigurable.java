@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.application.options.editor.EditorOptionsProvider;
 import com.intellij.codeInsight.CodeInsightBundle;
+import com.intellij.codeInsight.template.emmet.EmmetBundle;
 import com.intellij.codeInsight.template.impl.TemplateSettings;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.options.Configurable;
@@ -33,7 +34,6 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.options.ex.ConfigurableWrapper;
 import com.intellij.ui.components.JBCheckBox;
-import com.intellij.xml.XmlBundle;
 
 /**
  * User: zolotov
@@ -100,7 +100,7 @@ public class EmmetConfigurable extends SearchableConfigurable.Parent.Abstract im
 	@Override
 	public String getDisplayName()
 	{
-		return XmlBundle.message("emmet.configuration.title");
+		return EmmetBundle.message("emmet.configuration.title");
 	}
 
 	@Nullable

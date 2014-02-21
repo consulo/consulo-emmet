@@ -35,9 +35,9 @@ import com.intellij.codeInsight.template.emmet.generators.XmlZenCodingGeneratorI
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
+import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.lang.xml.XMLLanguage;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.UserDataHolderBase;
@@ -361,7 +361,8 @@ public class GenerationNode extends UserDataHolderBase
 
 	private static int gotoChild(Project project, CharSequence text, int offset, int start, int end)
 	{
-		PsiFile file = PsiFileFactory.getInstance(project).createFileFromText("dummy.xml", StdFileTypes.XML, text, LocalTimeCounter.currentTime(), false);
+		PsiFile file = PsiFileFactory.getInstance(project).createFileFromText("dummy.xml", XmlFileType.INSTANCE, text, LocalTimeCounter.currentTime(),
+				false);
 
 		PsiElement element = file.findElementAt(offset);
 		if(offset < end && element instanceof XmlToken && ((XmlToken) element).getTokenType() == XmlTokenType.XML_END_TAG_START)

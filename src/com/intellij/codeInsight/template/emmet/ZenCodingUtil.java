@@ -21,8 +21,9 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter;
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
+import com.intellij.ide.highlighter.HtmlFileType;
+import com.intellij.ide.highlighter.XHtmlFileType;
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.util.text.StringUtil;
 
 /**
@@ -140,7 +141,7 @@ public class ZenCodingUtil
 	public static boolean isHtml(CustomTemplateCallback callback)
 	{
 		FileType type = callback.getFileType();
-		return type == StdFileTypes.HTML || type == StdFileTypes.XHTML;
+		return type == HtmlFileType.INSTANCE || type == XHtmlFileType.INSTANCE;
 	}
 
 	public static boolean checkFilterSuffix(@NotNull String suffix)

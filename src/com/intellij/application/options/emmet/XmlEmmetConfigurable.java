@@ -25,8 +25,8 @@ import javax.swing.JPanel;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.codeInsight.template.emmet.EmmetBundle;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.xml.XmlBundle;
 
 /**
  * @author VISTALL
@@ -42,7 +42,7 @@ public class XmlEmmetConfigurable implements EmmetOptionsProvider
 		myRoot = new JPanel(new BorderLayout());
 
 		myEnableBemFilter = new JCheckBox();
-		myEnableBemFilter.setText(XmlBundle.message("emmet.enable.bem.filter"));
+		myEnableBemFilter.setText(EmmetBundle.message("emmet.enable.bem.filter"));
 
 		myRoot.add(myEnableBemFilter, BorderLayout.NORTH);
 	}

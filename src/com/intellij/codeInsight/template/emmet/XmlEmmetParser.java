@@ -40,13 +40,16 @@ import com.intellij.codeInsight.template.emmet.tokens.NumberToken;
 import com.intellij.codeInsight.template.emmet.tokens.OperationToken;
 import com.intellij.codeInsight.template.emmet.tokens.StringLiteralToken;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
+import com.intellij.codeInsight.template.emmet.tokens.TextToken;
 import com.intellij.codeInsight.template.emmet.tokens.ZenCodingToken;
 import com.intellij.codeInsight.template.emmet.tokens.ZenCodingTokens;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.XmlElementFactory;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.psi.xml.XmlTokenType;
 import com.intellij.util.containers.Stack;
@@ -119,6 +122,10 @@ public class XmlEmmetParser extends EmmetParser
 		{
 			final String text = ((StringLiteralToken) token).getText();
 			return text.substring(1, text.length() - 1);
+		}
+		else if(token instanceof TextToken)
+		{
+			return ((TextToken) token).getText();
 		}
 		else if(token instanceof IdentifierToken)
 		{
@@ -427,9 +434,20 @@ public class XmlEmmetParser extends EmmetParser
 			return null;
 		}
 
-		final String name = ((IdentifierToken) token).getText();
+		String name = ((IdentifierToken) token).getText();
 
 		if(name.isEmpty())
+		{
+			return null;
+		}
+
+		final XmlTag tag = XmlElementFactory.getInstance(myCallback.getProject()).createTagFromText("<tag " + name + "=''/>");
+		XmlAttribute[] attributes = tag.getAttributes();
+		if(attributes.length == 1)
+		{
+			name = attributes[0].getName();
+		}
+		else
 		{
 			return null;
 		}
