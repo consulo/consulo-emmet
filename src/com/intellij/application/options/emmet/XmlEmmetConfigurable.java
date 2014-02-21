@@ -1,23 +1,44 @@
+/*
+ * Copyright 2013-2014 must-be.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.intellij.application.options.emmet;
 
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.xml.XmlBundle;
+import java.awt.BorderLayout;
+
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.awt.*;
+import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.xml.XmlBundle;
 
 /**
  * @author VISTALL
  * @since 23.08.13.
  */
-public class XmlEmmetConfigurable implements EmmetOptionsProvider {
+public class XmlEmmetConfigurable implements EmmetOptionsProvider
+{
 	private JPanel myRoot;
 	private JCheckBox myEnableBemFilter;
 
-	public XmlEmmetConfigurable() {
+	public XmlEmmetConfigurable()
+	{
 		myRoot = new JPanel(new BorderLayout());
 
 		myEnableBemFilter = new JCheckBox();
@@ -28,56 +49,65 @@ public class XmlEmmetConfigurable implements EmmetOptionsProvider {
 
 	@Nullable
 	@Override
-	public JComponent createComponent() {
+	public JComponent createComponent()
+	{
 		return myRoot;
 	}
 
 	@Override
-	public boolean isModified() {
+	public boolean isModified()
+	{
 		XmlEmmetOptions instance = XmlEmmetOptions.getInstance();
 		return myEnableBemFilter.isSelected() != instance.isBemFilterEnabledByDefault();
 	}
 
 	@Override
-	public void apply() throws ConfigurationException {
+	public void apply() throws ConfigurationException
+	{
 		XmlEmmetOptions instance = XmlEmmetOptions.getInstance();
 
 		instance.setBemFilterEnabledByDefault(myEnableBemFilter.isSelected());
 	}
 
 	@Override
-	public void reset() {
+	public void reset()
+	{
 		XmlEmmetOptions instance = XmlEmmetOptions.getInstance();
 
 		myEnableBemFilter.setSelected(instance.isBemFilterEnabledByDefault());
 	}
 
 	@Override
-	public void disposeUIResources() {
+	public void disposeUIResources()
+	{
 
 	}
 
 	@NotNull
 	@Override
-	public String getId() {
+	public String getId()
+	{
 		return "xml.emmet.application.settings";
 	}
 
 	@Nullable
 	@Override
-	public Runnable enableSearch(String s) {
+	public Runnable enableSearch(String s)
+	{
 		return null;
 	}
 
 	@Nls
 	@Override
-	public String getDisplayName() {
+	public String getDisplayName()
+	{
 		return "XML(HTML, etc)";
 	}
 
 	@Nullable
 	@Override
-	public String getHelpTopic() {
+	public String getHelpTopic()
+	{
 		return null;
 	}
 }

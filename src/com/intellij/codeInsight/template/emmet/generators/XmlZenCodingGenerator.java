@@ -15,6 +15,10 @@
  */
 package com.intellij.codeInsight.template.emmet.generators;
 
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.openapi.util.Pair;
@@ -23,57 +27,56 @@ import com.intellij.psi.xml.XmlDocument;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.xml.util.HtmlUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 
 /**
  * @author Eugene.Kudelevsky
  */
-public abstract class XmlZenCodingGenerator extends ZenCodingGenerator {
-  @Override
-  public TemplateImpl generateTemplate(@NotNull TemplateToken token, boolean hasChildren, @NotNull PsiElement context) {
-    String s = toString(token, hasChildren, context);
-    TemplateImpl template = token.getTemplate().copy();
-    template.setString(s);
-    return template;
-  }
+public abstract class XmlZenCodingGenerator extends ZenCodingGenerator
+{
+	@Override
+	public TemplateImpl generateTemplate(@NotNull TemplateToken token, boolean hasChildren, @NotNull PsiElement context)
+	{
+		String s = toString(token, hasChildren, context);
+		TemplateImpl template = token.getTemplate().copy();
+		template.setString(s);
+		return template;
+	}
 
-  @Override
-  public TemplateImpl createTemplateByKey(@NotNull String key) {
-    StringBuilder builder = new StringBuilder("<");
-    builder.append(key).append('>');
-    if (!HtmlUtil.isSingleHtmlTag(key)) {
-      builder.append("$END$</").append(key).append('>');
-    }
-    return new TemplateImpl("", builder.toString(), "");
-  }
+	@Override
+	public TemplateImpl createTemplateByKey(@NotNull String key)
+	{
+		StringBuilder builder = new StringBuilder("<");
+		builder.append(key).append('>');
+		if(!HtmlUtil.isSingleHtmlTag(key))
+		{
+			builder.append("$END$</").append(key).append('>');
+		}
+		return new TemplateImpl("", builder.toString(), "");
+	}
 
-  @NotNull
-  private String toString(@NotNull TemplateToken token, boolean hasChildren, @NotNull PsiElement context) {
-    XmlFile file = token.getFile();
-    XmlDocument document = file.getDocument();
-    if (document != null) {
-      XmlTag tag = document.getRootTag();
-      if (tag != null) {
-        return toString(tag, token.getAttribute2Value(), hasChildren, context);
-      }
-    }
-    return file.getText();
-  }
+	@NotNull
+	private String toString(@NotNull TemplateToken token, boolean hasChildren, @NotNull PsiElement context)
+	{
+		XmlFile file = token.getFile();
+		XmlDocument document = file.getDocument();
+		if(document != null)
+		{
+			XmlTag tag = document.getRootTag();
+			if(tag != null)
+			{
+				return toString(tag, token.getAttribute2Value(), hasChildren, context);
+			}
+		}
+		return file.getText();
+	}
 
-  public abstract String toString(@NotNull XmlTag tag,
-                                  @NotNull List<Pair<String, String>> attribute2Value,
-                                  boolean hasChildren,
-                                  @NotNull PsiElement context);
+	public abstract String toString(@NotNull XmlTag tag, @NotNull List<Pair<String, String>> attribute2Value, boolean hasChildren,
+			@NotNull PsiElement context);
 
-  @NotNull
-  public abstract String buildAttributesString(@NotNull List<Pair<String, String>> attribute2value,
-                                               boolean hasChildren,
-                                               int numberInIteration,
-                                               int totalIterations, @Nullable String surroundedText);
+	@NotNull
+	public abstract String buildAttributesString(@NotNull List<Pair<String, String>> attribute2value, boolean hasChildren, int numberInIteration,
+			int totalIterations, @Nullable String surroundedText);
 
-  public abstract boolean isMyContext(@NotNull PsiElement context, boolean wrapping);
+	public abstract boolean isMyContext(@NotNull PsiElement context, boolean wrapping);
 }

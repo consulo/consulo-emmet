@@ -15,24 +15,24 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import com.intellij.codeInsight.template.CustomTemplateCallback;
 
 /**
  * @author Eugene.Kudelevsky
  */
-public abstract class ZenCodingNode {
-  @NotNull
-  public abstract List<GenerationNode> expand(int numberInIteration,
-                                              int totalIterations, String surroundedText,
-                                              CustomTemplateCallback callback,
-                                              boolean insertSurroundedTextAtTheEnd, GenerationNode parent);
+public abstract class ZenCodingNode
+{
+	@NotNull
+	public abstract List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback,
+			boolean insertSurroundedTextAtTheEnd, GenerationNode parent);
 
-  @NotNull
-  public List<ZenCodingNode> getChildren() {
-    return Collections.emptyList();
-  }
+	@NotNull
+	public List<ZenCodingNode> getChildren()
+	{
+		return Collections.emptyList();
+	}
 }

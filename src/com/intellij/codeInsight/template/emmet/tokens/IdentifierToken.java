@@ -5,19 +5,23 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Eugene.Kudelevsky
  */
-public class IdentifierToken extends ZenCodingToken {
-  private final String myText;
+public class IdentifierToken extends ZenCodingToken
+{
+	private final String myText;
 
-  public IdentifierToken(@NotNull String text) {
-    myText = text;
-  }
+	public IdentifierToken(@NotNull String text)
+	{
+		myText = text;
+	}
 
-  @Override
-  public String toString() {
-    return myText;
-  }
+	@Override
+	public String toString()
+	{
+		return myText;
+	}
 
-  public String getText() {
-    return myText;
-  }
+	public String getText()
+	{
+		return myText;
+	}
 }

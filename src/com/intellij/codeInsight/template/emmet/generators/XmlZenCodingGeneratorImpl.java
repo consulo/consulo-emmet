@@ -15,6 +15,12 @@
  */
 package com.intellij.codeInsight.template.emmet.generators;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.template.HtmlTextContextType;
 import com.intellij.codeInsight.template.emmet.ZenCodingUtil;
 import com.intellij.lang.ASTNode;
@@ -28,117 +34,133 @@ import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.psi.XmlRecursiveElementVisitor;
 import com.intellij.psi.xml.XmlChildRole;
 import com.intellij.psi.xml.XmlTag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author Eugene.Kudelevsky
  */
-public class XmlZenCodingGeneratorImpl extends XmlZenCodingGenerator {
-  public static final XmlZenCodingGeneratorImpl INSTANCE = new XmlZenCodingGeneratorImpl();
+public class XmlZenCodingGeneratorImpl extends XmlZenCodingGenerator
+{
+	public static final XmlZenCodingGeneratorImpl INSTANCE = new XmlZenCodingGeneratorImpl();
 
-  private static boolean isTrueXml(FileType type) {
-    return type == StdFileTypes.XHTML || type == StdFileTypes.JSPX || type == StdFileTypes.XML;
-  }
+	private static boolean isTrueXml(FileType type)
+	{
+		return type == StdFileTypes.XHTML || type == StdFileTypes.JSPX || type == StdFileTypes.XML;
+	}
 
-  @NotNull
-  public String toString(@NotNull XmlTag tag,
-                         @NotNull List<Pair<String, String>> attribute2Value,
-                         boolean hasChildren,
-                         @NotNull PsiElement context) {
-    FileType fileType = context.getContainingFile().getFileType();
-    if (isTrueXml(fileType)) {
-      closeUnclosingTags(tag);
-    }
-    return tag.getContainingFile().getText();
-  }
+	@NotNull
+	public String toString(@NotNull XmlTag tag, @NotNull List<Pair<String, String>> attribute2Value, boolean hasChildren, @NotNull PsiElement context)
+	{
+		FileType fileType = context.getContainingFile().getFileType();
+		if(isTrueXml(fileType))
+		{
+			closeUnclosingTags(tag);
+		}
+		return tag.getContainingFile().getText();
+	}
 
-  @NotNull
-  public String buildAttributesString(@NotNull List<Pair<String, String>> attribute2value,
-                                      boolean hasChildren,
-                                      int numberInIteration,
-                                      int totalIterations, @Nullable String surroundedText) {
-    StringBuilder result = new StringBuilder();
-    for (Iterator<Pair<String, String>> it = attribute2value.iterator(); it.hasNext();) {
-      Pair<String, String> pair = it.next();
-      String name = pair.first;
-      String value = ZenCodingUtil.getValue(pair.second, numberInIteration, totalIterations, surroundedText);
-      result.append(getAttributeString(name, value));
-      if (it.hasNext()) {
-        result.append(' ');
-      }
-    }
-    return result.toString();
-  }
+	@NotNull
+	public String buildAttributesString(@NotNull List<Pair<String, String>> attribute2value, boolean hasChildren, int numberInIteration,
+			int totalIterations, @Nullable String surroundedText)
+	{
+		StringBuilder result = new StringBuilder();
+		for(Iterator<Pair<String, String>> it = attribute2value.iterator(); it.hasNext(); )
+		{
+			Pair<String, String> pair = it.next();
+			String name = pair.first;
+			String value = ZenCodingUtil.getValue(pair.second, numberInIteration, totalIterations, surroundedText);
+			result.append(getAttributeString(name, value));
+			if(it.hasNext())
+			{
+				result.append(' ');
+			}
+		}
+		return result.toString();
+	}
 
-  public boolean isMyContext(@NotNull PsiElement context, boolean wrapping) {
-    return isMyLanguage(context.getLanguage()) && (wrapping || HtmlTextContextType.isInContext(context));
-  }
+	public boolean isMyContext(@NotNull PsiElement context, boolean wrapping)
+	{
+		return isMyLanguage(context.getLanguage()) && (wrapping || HtmlTextContextType.isInContext(context));
+	}
 
-  protected boolean isMyLanguage(Language language) {
-    return language instanceof XMLLanguage;
-  }
+	protected boolean isMyLanguage(Language language)
+	{
+		return language instanceof XMLLanguage;
+	}
 
-  public String getSuffix() {
-    return "html";
-  }
+	public String getSuffix()
+	{
+		return "html";
+	}
 
-  public boolean isAppliedByDefault(@NotNull PsiElement context) {
-    return true;
-  }
+	public boolean isAppliedByDefault(@NotNull PsiElement context)
+	{
+		return true;
+	}
 
-  private static String getAttributeString(String name, String value) {
-    return name + "=\"" + value + '"';
-  }
+	private static String getAttributeString(String name, String value)
+	{
+		return name + "=\"" + value + '"';
+	}
 
-  @SuppressWarnings({"ConstantConditions"})
-  private static void closeUnclosingTags(@NotNull XmlTag root) {
-    final List<SmartPsiElementPointer<XmlTag>> tagToClose = new ArrayList<SmartPsiElementPointer<XmlTag>>();
-    Project project = root.getProject();
-    final SmartPointerManager pointerManager = SmartPointerManager.getInstance(project);
-    root.accept(new XmlRecursiveElementVisitor() {
-      @Override
-      public void visitXmlTag(final XmlTag tag) {
-        if (!isTagClosed(tag)) {
-          tagToClose.add(pointerManager.createSmartPsiElementPointer(tag));
-        }
-      }
-    });
-    PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
-    for (final SmartPsiElementPointer<XmlTag> pointer : tagToClose) {
-      final XmlTag tag = pointer.getElement();
-      if (tag != null) {
-        final ASTNode child = XmlChildRole.START_TAG_END_FINDER.findChild(tag.getNode());
-        if (child != null) {
-          final int offset = child.getTextRange().getStartOffset();
-          VirtualFile file = tag.getContainingFile().getVirtualFile();
-          if (file != null) {
-            final Document document = FileDocumentManager.getInstance().getDocument(file);
-            documentManager.doPostponedOperationsAndUnblockDocument(document);
-            ApplicationManager.getApplication().runWriteAction(new Runnable() {
-              public void run() {
-                document.replaceString(offset, tag.getTextRange().getEndOffset(), "/>");
-              }
-            });
-          }
-        }
-      }
-    }
-    documentManager.commitAllDocuments();
-  }
+	@SuppressWarnings({"ConstantConditions"})
+	private static void closeUnclosingTags(@NotNull XmlTag root)
+	{
+		final List<SmartPsiElementPointer<XmlTag>> tagToClose = new ArrayList<SmartPsiElementPointer<XmlTag>>();
+		Project project = root.getProject();
+		final SmartPointerManager pointerManager = SmartPointerManager.getInstance(project);
+		root.accept(new XmlRecursiveElementVisitor()
+		{
+			@Override
+			public void visitXmlTag(final XmlTag tag)
+			{
+				if(!isTagClosed(tag))
+				{
+					tagToClose.add(pointerManager.createSmartPsiElementPointer(tag));
+				}
+			}
+		});
+		PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
+		for(final SmartPsiElementPointer<XmlTag> pointer : tagToClose)
+		{
+			final XmlTag tag = pointer.getElement();
+			if(tag != null)
+			{
+				final ASTNode child = XmlChildRole.START_TAG_END_FINDER.findChild(tag.getNode());
+				if(child != null)
+				{
+					final int offset = child.getTextRange().getStartOffset();
+					VirtualFile file = tag.getContainingFile().getVirtualFile();
+					if(file != null)
+					{
+						final Document document = FileDocumentManager.getInstance().getDocument(file);
+						documentManager.doPostponedOperationsAndUnblockDocument(document);
+						ApplicationManager.getApplication().runWriteAction(new Runnable()
+						{
+							public void run()
+							{
+								document.replaceString(offset, tag.getTextRange().getEndOffset(), "/>");
+							}
+						});
+					}
+				}
+			}
+		}
+		documentManager.commitAllDocuments();
+	}
 
-  private static boolean isTagClosed(@NotNull XmlTag tag) {
-    ASTNode node = tag.getNode();
-    assert node != null;
-    final ASTNode emptyTagEnd = XmlChildRole.EMPTY_TAG_END_FINDER.findChild(node);
-    final ASTNode endTagEnd = XmlChildRole.CLOSING_TAG_START_FINDER.findChild(node);
-    return emptyTagEnd != null || endTagEnd != null;
-  }
+	private static boolean isTagClosed(@NotNull XmlTag tag)
+	{
+		ASTNode node = tag.getNode();
+		assert node != null;
+		final ASTNode emptyTagEnd = XmlChildRole.EMPTY_TAG_END_FINDER.findChild(node);
+		final ASTNode endTagEnd = XmlChildRole.CLOSING_TAG_START_FINDER.findChild(node);
+		return emptyTagEnd != null || endTagEnd != null;
+	}
 }

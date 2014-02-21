@@ -15,32 +15,36 @@
  */
 package com.intellij.codeInsight.template.emmet.filters;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.lang.xml.XMLLanguage;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Eugene.Kudelevsky
  */
-public class EscapeZenCodingFilter extends ZenCodingFilter {
-  @NotNull
-  @Override
-  public String filterText(@NotNull String s, @NotNull TemplateToken token) {
-    s = s.replace("&", "&amp;");
-    s = s.replace("<", "&lt;");
-    s = s.replace(">", "&gt;");
-    return s;
-  }
+public class EscapeZenCodingFilter extends ZenCodingFilter
+{
+	@NotNull
+	@Override
+	public String filterText(@NotNull String s, @NotNull TemplateToken token)
+	{
+		s = s.replace("&", "&amp;");
+		s = s.replace("<", "&lt;");
+		s = s.replace(">", "&gt;");
+		return s;
+	}
 
-  @NotNull
-  @Override
-  public String getSuffix() {
-    return "e";
-  }
+	@NotNull
+	@Override
+	public String getSuffix()
+	{
+		return "e";
+	}
 
-  @Override
-  public boolean isMyContext(@NotNull PsiElement context) {
-    return context.getLanguage() instanceof XMLLanguage;
-  }
+	@Override
+	public boolean isMyContext(@NotNull PsiElement context)
+	{
+		return context.getLanguage() instanceof XMLLanguage;
+	}
 }

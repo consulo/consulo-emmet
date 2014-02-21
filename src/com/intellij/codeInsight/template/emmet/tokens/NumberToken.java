@@ -18,19 +18,23 @@ package com.intellij.codeInsight.template.emmet.tokens;
 /**
  * @author Eugene.Kudelevsky
  */
-public class NumberToken extends ZenCodingToken {
-  private final int myNumber;
+public class NumberToken extends ZenCodingToken
+{
+	private final int myNumber;
 
-  public NumberToken(int number) {
-    myNumber = number;
-  }
+	public NumberToken(int number)
+	{
+		myNumber = number;
+	}
 
-  public int getNumber() {
-    return myNumber;
-  }
+	public int getNumber()
+	{
+		return myNumber;
+	}
 
-  @Override
-  public String toString() {
-    return Integer.toString(myNumber);
-  }
+	@Override
+	public String toString()
+	{
+		return Integer.toString(myNumber);
+	}
 }

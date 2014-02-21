@@ -15,35 +15,38 @@
  */
 package com.intellij.codeInsight.template.emmet.filters;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Eugene.Kudelevsky
  */
-public abstract class ZenCodingFilter {
-  public static final ExtensionPointName<ZenCodingFilter> EP_NAME =
-    new ExtensionPointName<ZenCodingFilter>("org.consulo.emmet.codingFilter");
+public abstract class ZenCodingFilter
+{
+	public static final ExtensionPointName<ZenCodingFilter> EP_NAME = new ExtensionPointName<ZenCodingFilter>("org.consulo.emmet.codingFilter");
 
-  @NotNull
-  public String filterText(@NotNull String text, @NotNull TemplateToken token) {
-    return text;
-  }
+	@NotNull
+	public String filterText(@NotNull String text, @NotNull TemplateToken token)
+	{
+		return text;
+	}
 
-  @NotNull
-  public GenerationNode filterNode(@NotNull GenerationNode node) {
-    return node;
-  }
+	@NotNull
+	public GenerationNode filterNode(@NotNull GenerationNode node)
+	{
+		return node;
+	}
 
-  @NotNull
-  public abstract String getSuffix();
+	@NotNull
+	public abstract String getSuffix();
 
-  public abstract boolean isMyContext(@NotNull PsiElement context);
+	public abstract boolean isMyContext(@NotNull PsiElement context);
 
-  public boolean isAppliedByDefault(@NotNull PsiElement context) {
-    return false;
-  }
+	public boolean isAppliedByDefault(@NotNull PsiElement context)
+	{
+		return false;
+	}
 }

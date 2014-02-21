@@ -15,60 +15,67 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import static com.intellij.util.containers.ContainerUtil.newArrayList;
 
 import java.util.List;
 
-import static com.intellij.util.containers.ContainerUtil.newArrayList;
+import org.jetbrains.annotations.NotNull;
+import com.intellij.codeInsight.template.CustomTemplateCallback;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author zolotov
  */
-public class ClimbUpOperationNode extends ZenCodingNode {
-  private final ZenCodingNode myLeftOperand;
-  private final ZenCodingNode myRightOperand;
+public class ClimbUpOperationNode extends ZenCodingNode
+{
+	private final ZenCodingNode myLeftOperand;
+	private final ZenCodingNode myRightOperand;
 
-  public ClimbUpOperationNode(ZenCodingNode leftOperand, ZenCodingNode rightOperand) {
-    myLeftOperand = leftOperand;
-    myRightOperand = rightOperand;
-  }
+	public ClimbUpOperationNode(ZenCodingNode leftOperand, ZenCodingNode rightOperand)
+	{
+		myLeftOperand = leftOperand;
+		myRightOperand = rightOperand;
+	}
 
-  public ZenCodingNode getLeftOperand() {
-    return myLeftOperand;
-  }
+	public ZenCodingNode getLeftOperand()
+	{
+		return myLeftOperand;
+	}
 
-  public ZenCodingNode getRightOperand() {
-    return myRightOperand;
-  }
+	public ZenCodingNode getRightOperand()
+	{
+		return myRightOperand;
+	}
 
-  @NotNull
-  @Override
-  public List<GenerationNode> expand(int numberInIteration,
-                                     int totalIterations, String surroundedText,
-                                     CustomTemplateCallback callback,
-                                     boolean insertSurroundedTextAtTheEnd, GenerationNode parent) {
-    List<GenerationNode> result = newArrayList();
-    result.addAll(myLeftOperand.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, parent));
-    GenerationNode grandParent = parent != null ? parent.getParent() : null;
-    if (grandParent != null) {
-      myRightOperand.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, grandParent);
-    }
-    else {
-      result.addAll(myRightOperand.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, parent));
-    }
-    return result;
-  }
+	@NotNull
+	@Override
+	public List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback,
+			boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
+	{
+		List<GenerationNode> result = newArrayList();
+		result.addAll(myLeftOperand.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, parent));
+		GenerationNode grandParent = parent != null ? parent.getParent() : null;
+		if(grandParent != null)
+		{
+			myRightOperand.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, grandParent);
+		}
+		else
+		{
+			result.addAll(myRightOperand.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, parent));
+		}
+		return result;
+	}
 
-  @NotNull
-  @Override
-  public List<ZenCodingNode> getChildren() {
-    return ContainerUtil.newLinkedList(myLeftOperand, myRightOperand);
-  }
+	@NotNull
+	@Override
+	public List<ZenCodingNode> getChildren()
+	{
+		return ContainerUtil.newLinkedList(myLeftOperand, myRightOperand);
+	}
 
-  @Override
-  public String toString() {
-    return "^";
-  }
+	@Override
+	public String toString()
+	{
+		return "^";
+	}
 }

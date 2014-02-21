@@ -15,42 +15,46 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import com.intellij.codeInsight.template.CustomTemplateCallback;
 
 /**
  * @author Eugene.Kudelevsky
  */
-public class FilterNode extends ZenCodingNode {
-  private final ZenCodingNode myNode;
-  private final String myFilter;
+public class FilterNode extends ZenCodingNode
+{
+	private final ZenCodingNode myNode;
+	private final String myFilter;
 
-  public FilterNode(ZenCodingNode node, String filter) {
-    myNode = node;
-    myFilter = filter;
-  }
+	public FilterNode(ZenCodingNode node, String filter)
+	{
+		myNode = node;
+		myFilter = filter;
+	}
 
-  public ZenCodingNode getNode() {
-    return myNode;
-  }
+	public ZenCodingNode getNode()
+	{
+		return myNode;
+	}
 
-  public String getFilter() {
-    return myFilter;
-  }
+	public String getFilter()
+	{
+		return myFilter;
+	}
 
-  @NotNull
-  @Override
-  public List<GenerationNode> expand(int numberInIteration,
-                                     int totalIterations, String surroundedText,
-                                     CustomTemplateCallback callback,
-                                     boolean insertSurroundedTextAtTheEnd, GenerationNode parent) {
-    return myNode.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, parent);
-  }
+	@NotNull
+	@Override
+	public List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback,
+			boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
+	{
+		return myNode.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, parent);
+	}
 
-  @Override
-  public String toString() {
-    return "Filter(" + myFilter + ")";
-  }
+	@Override
+	public String toString()
+	{
+		return "Filter(" + myFilter + ")";
+	}
 }

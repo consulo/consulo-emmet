@@ -15,46 +15,48 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.emmet.generators.LoremGenerator;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.openapi.util.Pair;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Eugene.Kudelevsky
  */
-public class LoremNode extends ZenCodingNode {
-  private final int myWordsCount;
-  private final LoremGenerator myLoremGenerator;
+public class LoremNode extends ZenCodingNode
+{
+	private final int myWordsCount;
+	private final LoremGenerator myLoremGenerator;
 
-  public LoremNode(int wordsCount) {
-    myLoremGenerator = new LoremGenerator();
-    myWordsCount = wordsCount;
-  }
+	public LoremNode(int wordsCount)
+	{
+		myLoremGenerator = new LoremGenerator();
+		myWordsCount = wordsCount;
+	}
 
-  @NotNull
-  @Override
-  public List<GenerationNode> expand(int numberInIteration,
-                                     int totalIterations, String surroundedText,
-                                     CustomTemplateCallback callback,
-                                     boolean insertSurroundedTextAtTheEnd, GenerationNode parent) {
+	@NotNull
+	@Override
+	public List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback,
+			boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
+	{
 
 
-    final TemplateToken templateToken = new TemplateToken("", Collections.<Pair<String, String>>emptyList());
-    final TemplateImpl template = new TemplateImpl("", myLoremGenerator.generate(myWordsCount, numberInIteration <= 0), "");
-    templateToken.setTemplate(template, callback);
-    final GenerationNode node = new GenerationNode(templateToken, numberInIteration,
-                                                   totalIterations, surroundedText, insertSurroundedTextAtTheEnd, parent);
-    return Collections.singletonList(node);
-  }
+		final TemplateToken templateToken = new TemplateToken("", Collections.<Pair<String, String>>emptyList());
+		final TemplateImpl template = new TemplateImpl("", myLoremGenerator.generate(myWordsCount, numberInIteration <= 0), "");
+		templateToken.setTemplate(template, callback);
+		final GenerationNode node = new GenerationNode(templateToken, numberInIteration, totalIterations, surroundedText, insertSurroundedTextAtTheEnd,
+				parent);
+		return Collections.singletonList(node);
+	}
 
-  @Override
-  public String toString() {
-    return "Lorem(" + myWordsCount + ")";
-  }
+	@Override
+	public String toString()
+	{
+		return "Lorem(" + myWordsCount + ")";
+	}
 }

@@ -18,19 +18,23 @@ package com.intellij.codeInsight.template.emmet.tokens;
 /**
  * @author Eugene.Kudelevsky
  */
-public class OperationToken extends ZenCodingToken {
-  private final char mySign;
+public class OperationToken extends ZenCodingToken
+{
+	private final char mySign;
 
-  public OperationToken(char sign) {
-    mySign = sign;
-  }
+	public OperationToken(char sign)
+	{
+		mySign = sign;
+	}
 
-  public char getSign() {
-    return mySign;
-  }
+	public char getSign()
+	{
+		return mySign;
+	}
 
-  @Override
-  public String toString() {
-    return Character.toString(mySign);
-  }
+	@Override
+	public String toString()
+	{
+		return Character.toString(mySign);
+	}
 }

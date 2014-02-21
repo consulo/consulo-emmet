@@ -15,46 +15,51 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import com.intellij.openapi.util.text.LineTokenizer;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import com.intellij.codeInsight.template.CustomTemplateCallback;
+import com.intellij.openapi.util.text.LineTokenizer;
 
 /**
  * @author Eugene.Kudelevsky
  */
-public class UnaryMulOperationNode extends ZenCodingNode {
-  private final ZenCodingNode myOperand;
+public class UnaryMulOperationNode extends ZenCodingNode
+{
+	private final ZenCodingNode myOperand;
 
-  public UnaryMulOperationNode(ZenCodingNode operand) {
-    myOperand = operand;
-  }
+	public UnaryMulOperationNode(ZenCodingNode operand)
+	{
+		myOperand = operand;
+	}
 
-  public ZenCodingNode getOperand() {
-    return myOperand;
-  }
+	public ZenCodingNode getOperand()
+	{
+		return myOperand;
+	}
 
-  @NotNull
-  @Override
-  public List<GenerationNode> expand(int numberInIteration,
-                                     int totalIterations, String surroundedText,
-                                     CustomTemplateCallback callback,
-                                     boolean insertSurroundedTextAtTheEnd, GenerationNode parent) {
-    if (surroundedText == null) {
-      return myOperand.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, parent);
-    }
-    String[] lines = LineTokenizer.tokenize(surroundedText, false);
-    List<GenerationNode> result = new ArrayList<GenerationNode>();
-    for (int i = 0; i < lines.length; i++) {
-      result.addAll(myOperand.expand(i, lines.length, lines[i].trim(), callback, insertSurroundedTextAtTheEnd, parent));
-    }
-    return result;
-  }
+	@NotNull
+	@Override
+	public List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback,
+			boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
+	{
+		if(surroundedText == null)
+		{
+			return myOperand.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, parent);
+		}
+		String[] lines = LineTokenizer.tokenize(surroundedText, false);
+		List<GenerationNode> result = new ArrayList<GenerationNode>();
+		for(int i = 0; i < lines.length; i++)
+		{
+			result.addAll(myOperand.expand(i, lines.length, lines[i].trim(), callback, insertSurroundedTextAtTheEnd, parent));
+		}
+		return result;
+	}
 
-  @Override
-  public String toString() {
-    return "*";
-  }
+	@Override
+	public String toString()
+	{
+		return "*";
+	}
 }

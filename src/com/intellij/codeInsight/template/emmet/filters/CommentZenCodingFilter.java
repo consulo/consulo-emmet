@@ -15,56 +15,66 @@
  */
 package com.intellij.codeInsight.template.emmet.filters;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.lang.xml.XMLLanguage;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlDocument;
 import com.intellij.psi.xml.XmlTag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Eugene.Kudelevsky
  */
-public class CommentZenCodingFilter extends ZenCodingFilter {
-  private static String buildCommentString(@Nullable String classAttr, @Nullable String idAttr) {
-    StringBuilder builder = new StringBuilder();
-    if (!StringUtil.isEmpty(idAttr)) {
-      builder.append('#').append(idAttr);
-    }
-    if (!StringUtil.isEmpty(classAttr)) {
-      builder.append('.').append(classAttr);
-    }
-    return builder.toString();
-  }
+public class CommentZenCodingFilter extends ZenCodingFilter
+{
+	private static String buildCommentString(@Nullable String classAttr, @Nullable String idAttr)
+	{
+		StringBuilder builder = new StringBuilder();
+		if(!StringUtil.isEmpty(idAttr))
+		{
+			builder.append('#').append(idAttr);
+		}
+		if(!StringUtil.isEmpty(classAttr))
+		{
+			builder.append('.').append(classAttr);
+		}
+		return builder.toString();
+	}
 
-  @NotNull
-  @Override
-  public String filterText(@NotNull String text, @NotNull TemplateToken token) {
-    XmlDocument document = token.getFile().getDocument();
-    if (document != null) {
-      XmlTag tag = document.getRootTag();
-      if (tag != null) {
-        String classAttr = tag.getAttributeValue("class");
-        String idAttr = tag.getAttributeValue("id");
-        if (!StringUtil.isEmpty(classAttr) || !StringUtil.isEmpty(idAttr)) {
-          String commentString = buildCommentString(classAttr, idAttr);
-          return text + "\n<!-- /" + commentString + " -->";
-        }
-      }
-    }
-    return text;
-  }
+	@NotNull
+	@Override
+	public String filterText(@NotNull String text, @NotNull TemplateToken token)
+	{
+		XmlDocument document = token.getFile().getDocument();
+		if(document != null)
+		{
+			XmlTag tag = document.getRootTag();
+			if(tag != null)
+			{
+				String classAttr = tag.getAttributeValue("class");
+				String idAttr = tag.getAttributeValue("id");
+				if(!StringUtil.isEmpty(classAttr) || !StringUtil.isEmpty(idAttr))
+				{
+					String commentString = buildCommentString(classAttr, idAttr);
+					return text + "\n<!-- /" + commentString + " -->";
+				}
+			}
+		}
+		return text;
+	}
 
-  @NotNull
-  @Override
-  public String getSuffix() {
-    return "c";
-  }
+	@NotNull
+	@Override
+	public String getSuffix()
+	{
+		return "c";
+	}
 
-  @Override
-  public boolean isMyContext(@NotNull PsiElement context) {
-    return context.getLanguage() instanceof XMLLanguage;
-  }
+	@Override
+	public boolean isMyContext(@NotNull PsiElement context)
+	{
+		return context.getLanguage() instanceof XMLLanguage;
+	}
 }

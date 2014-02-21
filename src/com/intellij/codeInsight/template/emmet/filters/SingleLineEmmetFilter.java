@@ -15,38 +15,44 @@
  */
 package com.intellij.codeInsight.template.emmet.filters;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.lang.xml.XMLLanguage;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * User: zolotov
  * Date: 2/4/13
  */
-public class SingleLineEmmetFilter extends ZenCodingFilter {
-  @NotNull
-  @Override
-  public String getSuffix() {
-    return "s";
-  }
+public class SingleLineEmmetFilter extends ZenCodingFilter
+{
+	@NotNull
+	@Override
+	public String getSuffix()
+	{
+		return "s";
+	}
 
-  @NotNull
-  @Override
-  public GenerationNode filterNode(@NotNull GenerationNode node) {
-    TemplateImpl template = node.getTemplateToken().getTemplate();
-    if (template != null) {
-      template.setToReformat(false);
-    }
-    for (GenerationNode generationNode : node.getChildren()) {
-      filterNode(generationNode);
-    }
-    return node;
-  }
+	@NotNull
+	@Override
+	public GenerationNode filterNode(@NotNull GenerationNode node)
+	{
+		TemplateImpl template = node.getTemplateToken().getTemplate();
+		if(template != null)
+		{
+			template.setToReformat(false);
+		}
+		for(GenerationNode generationNode : node.getChildren())
+		{
+			filterNode(generationNode);
+		}
+		return node;
+	}
 
-  @Override
-  public boolean isMyContext(@NotNull PsiElement context) {
-    return context.getLanguage() instanceof XMLLanguage;
-  }
+	@Override
+	public boolean isMyContext(@NotNull PsiElement context)
+	{
+		return context.getLanguage() instanceof XMLLanguage;
+	}
 }

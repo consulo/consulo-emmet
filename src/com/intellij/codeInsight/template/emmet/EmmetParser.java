@@ -15,218 +15,267 @@
  */
 package com.intellij.codeInsight.template.emmet;
 
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.nodes.*;
-import com.intellij.codeInsight.template.emmet.tokens.*;
+import com.intellij.codeInsight.template.emmet.tokens.IdentifierToken;
+import com.intellij.codeInsight.template.emmet.tokens.NumberToken;
+import com.intellij.codeInsight.template.emmet.tokens.OperationToken;
+import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
+import com.intellij.codeInsight.template.emmet.tokens.TextToken;
+import com.intellij.codeInsight.template.emmet.tokens.ZenCodingToken;
+import com.intellij.codeInsight.template.emmet.tokens.ZenCodingTokens;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * User: zolotov
  * Date: 1/25/13
  */
-public abstract class EmmetParser {
-  private final List<ZenCodingToken> myTokens;
-  protected final CustomTemplateCallback myCallback;
-  protected final ZenCodingGenerator myGenerator;
+public abstract class EmmetParser
+{
+	private final List<ZenCodingToken> myTokens;
+	protected final CustomTemplateCallback myCallback;
+	protected final ZenCodingGenerator myGenerator;
 
-  private int myIndex = 0;
+	private int myIndex = 0;
 
-  public EmmetParser(List<ZenCodingToken> tokens, CustomTemplateCallback callback, ZenCodingGenerator generator) {
-    myTokens = tokens;
-    myCallback = callback;
-    myGenerator = generator;
-  }
+	public EmmetParser(List<ZenCodingToken> tokens, CustomTemplateCallback callback, ZenCodingGenerator generator)
+	{
+		myTokens = tokens;
+		myCallback = callback;
+		myGenerator = generator;
+	}
 
-  public int getIndex() {
-    return myIndex;
-  }
+	public int getIndex()
+	{
+		return myIndex;
+	}
 
-  @Nullable
-  public ZenCodingNode parse() {
-    ZenCodingNode add = parseAddOrMore();
-    if (add == null) {
-      return null;
-    }
+	@Nullable
+	public ZenCodingNode parse()
+	{
+		ZenCodingNode add = parseAddOrMore();
+		if(add == null)
+		{
+			return null;
+		}
 
-    ZenCodingNode result = add;
+		ZenCodingNode result = add;
 
-    while (true) {
-      ZenCodingToken token = getToken();
-      if (token != ZenCodingTokens.PIPE) {
-        return result;
-      }
+		while(true)
+		{
+			ZenCodingToken token = getToken();
+			if(token != ZenCodingTokens.PIPE)
+			{
+				return result;
+			}
 
-      advance();
-      token = getToken();
-      if (!(token instanceof IdentifierToken)) {
-        return null;
-      }
+			advance();
+			token = getToken();
+			if(!(token instanceof IdentifierToken))
+			{
+				return null;
+			}
 
-      final String filterSuffix = ((IdentifierToken)token).getText();
-      if (!ZenCodingUtil.checkFilterSuffix(filterSuffix)) {
-        return null;
-      }
+			final String filterSuffix = ((IdentifierToken) token).getText();
+			if(!ZenCodingUtil.checkFilterSuffix(filterSuffix))
+			{
+				return null;
+			}
 
-      advance();
-      result = new FilterNode(result, filterSuffix);
-    }
-  }
+			advance();
+			result = new FilterNode(result, filterSuffix);
+		}
+	}
 
-  @Nullable
-  protected ZenCodingNode parseAddOrMore() {
-    ZenCodingNode mul = parseMul();
+	@Nullable
+	protected ZenCodingNode parseAddOrMore()
+	{
+		ZenCodingNode mul = parseMul();
 
-    ZenCodingToken operationToken = getToken();
-    if (!(operationToken instanceof OperationToken)) {
-      return mul;
-    }
-    char sign = ((OperationToken)operationToken).getSign();
+		ZenCodingToken operationToken = getToken();
+		if(!(operationToken instanceof OperationToken))
+		{
+			return mul;
+		}
+		char sign = ((OperationToken) operationToken).getSign();
 
-    if (sign == '^') {
-      return parseClimbUpOperation(mul);
-    }
-    if (mul == null) {
-      return null;
-    }
-    if (sign == '+') {
-      advance();
-      ZenCodingNode add2 = parseAddOrMore();
-      if (add2 == null) {
-        return null;
-      }
-      return new AddOperationNode(mul, add2);
-    }
-    else if (sign == '>') {
-      return parseMoreOperation(mul);
-    }
-    return null;
-  }
+		if(sign == '^')
+		{
+			return parseClimbUpOperation(mul);
+		}
+		if(mul == null)
+		{
+			return null;
+		}
+		if(sign == '+')
+		{
+			advance();
+			ZenCodingNode add2 = parseAddOrMore();
+			if(add2 == null)
+			{
+				return null;
+			}
+			return new AddOperationNode(mul, add2);
+		}
+		else if(sign == '>')
+		{
+			return parseMoreOperation(mul);
+		}
+		return null;
+	}
 
-  protected ZenCodingNode parseClimbUpOperation(@Nullable ZenCodingNode leftPart) {
-    advance();
-    leftPart = leftPart != null ? leftPart : ZenEmptyNode.INSTANCE;
-    ZenCodingNode rigthPart = parseAddOrMore();
-    if (rigthPart == null) {
-      return null;
-    }
-    return new ClimbUpOperationNode(leftPart, rigthPart);
-  }
+	protected ZenCodingNode parseClimbUpOperation(@Nullable ZenCodingNode leftPart)
+	{
+		advance();
+		leftPart = leftPart != null ? leftPart : ZenEmptyNode.INSTANCE;
+		ZenCodingNode rigthPart = parseAddOrMore();
+		if(rigthPart == null)
+		{
+			return null;
+		}
+		return new ClimbUpOperationNode(leftPart, rigthPart);
+	}
 
-  protected ZenCodingNode parseMoreOperation(@NotNull ZenCodingNode leftPart) {
-    advance();
-    ZenCodingNode rightPart = parseAddOrMore();
-    if (rightPart == null) {
-      return null;
-    }
-    return new MoreOperationNode(leftPart, rightPart);
-  }
+	protected ZenCodingNode parseMoreOperation(@NotNull ZenCodingNode leftPart)
+	{
+		advance();
+		ZenCodingNode rightPart = parseAddOrMore();
+		if(rightPart == null)
+		{
+			return null;
+		}
+		return new MoreOperationNode(leftPart, rightPart);
+	}
 
-  protected int advance() {
-    return myIndex++;
-  }
+	protected int advance()
+	{
+		return myIndex++;
+	}
 
-  @Nullable
-  private ZenCodingNode parseMul() {
-    ZenCodingNode exp = parseExpressionInBraces();
-    if (exp == null) {
-      return null;
-    }
-    ZenCodingToken operationToken = getToken();
-    if (!(operationToken instanceof OperationToken)) {
-      return exp;
-    }
-    if (((OperationToken)operationToken).getSign() != '*') {
-      return exp;
-    }
-    advance();
-    ZenCodingToken numberToken = getToken();
-    if (numberToken instanceof NumberToken) {
-      advance();
-      return new MulOperationNode(exp, ((NumberToken)numberToken).getNumber());
-    }
-    return new UnaryMulOperationNode(exp);
-  }
+	@Nullable
+	private ZenCodingNode parseMul()
+	{
+		ZenCodingNode exp = parseExpressionInBraces();
+		if(exp == null)
+		{
+			return null;
+		}
+		ZenCodingToken operationToken = getToken();
+		if(!(operationToken instanceof OperationToken))
+		{
+			return exp;
+		}
+		if(((OperationToken) operationToken).getSign() != '*')
+		{
+			return exp;
+		}
+		advance();
+		ZenCodingToken numberToken = getToken();
+		if(numberToken instanceof NumberToken)
+		{
+			advance();
+			return new MulOperationNode(exp, ((NumberToken) numberToken).getNumber());
+		}
+		return new UnaryMulOperationNode(exp);
+	}
 
-  @Nullable
-  private ZenCodingNode parseExpressionInBraces() {
-    ZenCodingToken token = getToken();
-    if (token == ZenCodingTokens.OPENING_R_BRACKET) {
-      advance();
-      ZenCodingNode add = parseAddOrMore();
-      if (add == null) {
-        return null;
-      }
-      ZenCodingToken closingBrace = getToken();
-      if (closingBrace != ZenCodingTokens.CLOSING_R_BRACKET) {
-        return null;
-      }
-      advance();
-      return add;
-    }
-    else if (token instanceof TextToken) {
-      advance();
-      return new TextNode((TextToken)token);
-    }
+	@Nullable
+	private ZenCodingNode parseExpressionInBraces()
+	{
+		ZenCodingToken token = getToken();
+		if(token == ZenCodingTokens.OPENING_R_BRACKET)
+		{
+			advance();
+			ZenCodingNode add = parseAddOrMore();
+			if(add == null)
+			{
+				return null;
+			}
+			ZenCodingToken closingBrace = getToken();
+			if(closingBrace != ZenCodingTokens.CLOSING_R_BRACKET)
+			{
+				return null;
+			}
+			advance();
+			return add;
+		}
+		else if(token instanceof TextToken)
+		{
+			advance();
+			return new TextNode((TextToken) token);
+		}
 
-    final ZenCodingNode templateNode = parseTemplate();
-    if (templateNode == null) {
-      return null;
-    }
+		final ZenCodingNode templateNode = parseTemplate();
+		if(templateNode == null)
+		{
+			return null;
+		}
 
-    token = getToken();
-    if (token instanceof TextToken) {
-      advance();
-      return new MoreOperationNode(templateNode, new TextNode((TextToken)token));
-    }
-    return templateNode;
-  }
+		token = getToken();
+		if(token instanceof TextToken)
+		{
+			advance();
+			return new MoreOperationNode(templateNode, new TextNode((TextToken) token));
+		}
+		return templateNode;
+	}
 
-  @Nullable
-  protected ZenCodingNode parseTemplate() {
-    ZenCodingToken token = getToken();
-    if (!(token instanceof IdentifierToken)) {
-      return null;
-    }
-    String templateKey = ((IdentifierToken)token).getText();
-    advance();
+	@Nullable
+	protected ZenCodingNode parseTemplate()
+	{
+		ZenCodingToken token = getToken();
+		if(!(token instanceof IdentifierToken))
+		{
+			return null;
+		}
+		String templateKey = ((IdentifierToken) token).getText();
+		advance();
 
-    TemplateImpl template = myCallback.findApplicableTemplate(templateKey);
-    if (template == null && !ZenCodingUtil.isXML11ValidQName(templateKey)) {
-      return null;
-    }
+		TemplateImpl template = myCallback.findApplicableTemplate(templateKey);
+		if(template == null && !ZenCodingUtil.isXML11ValidQName(templateKey))
+		{
+			return null;
+		}
 
-    final TemplateToken templateToken = new TemplateToken(templateKey);
-    if (!setTemplate(templateToken, template)) {
-      return null;
-    }
-    return new TemplateNode(templateToken);
-  }
+		final TemplateToken templateToken = new TemplateToken(templateKey);
+		if(!setTemplate(templateToken, template))
+		{
+			return null;
+		}
+		return new TemplateNode(templateToken);
+	}
 
-  @Nullable
-  protected String getDefaultTemplateKey() {
-    return null;
-  }
+	@Nullable
+	protected String getDefaultTemplateKey()
+	{
+		return null;
+	}
 
-  protected boolean setTemplate(final TemplateToken token, TemplateImpl template) {
-    if (template == null) {
-      template = myGenerator.createTemplateByKey(token.getKey());
-    }
-    if (template == null) {
-      return false;
-    }
-    return token.setTemplate(template, myCallback);
-  }
+	protected boolean setTemplate(final TemplateToken token, TemplateImpl template)
+	{
+		if(template == null)
+		{
+			template = myGenerator.createTemplateByKey(token.getKey());
+		}
+		if(template == null)
+		{
+			return false;
+		}
+		return token.setTemplate(template, myCallback);
+	}
 
-  @Nullable
-  protected ZenCodingToken getToken() {
-    if (myIndex < myTokens.size()) {
-      return myTokens.get(myIndex);
-    }
-    return null;
-  }
+	@Nullable
+	protected ZenCodingToken getToken()
+	{
+		if(myIndex < myTokens.size())
+		{
+			return myTokens.get(myIndex);
+		}
+		return null;
+	}
 }

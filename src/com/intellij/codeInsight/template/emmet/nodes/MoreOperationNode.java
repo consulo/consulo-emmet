@@ -15,83 +15,96 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.openapi.util.text.LineTokenizer;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Eugene.Kudelevsky
  */
-public class MoreOperationNode extends ZenCodingNode {
-  private final ZenCodingNode myLeftOperand;
-  private final ZenCodingNode myRightOperand;
+public class MoreOperationNode extends ZenCodingNode
+{
+	private final ZenCodingNode myLeftOperand;
+	private final ZenCodingNode myRightOperand;
 
-  public MoreOperationNode(ZenCodingNode leftOperand, ZenCodingNode rightOperand) {
-    myLeftOperand = leftOperand;
-    myRightOperand = rightOperand;
-  }
+	public MoreOperationNode(ZenCodingNode leftOperand, ZenCodingNode rightOperand)
+	{
+		myLeftOperand = leftOperand;
+		myRightOperand = rightOperand;
+	}
 
-  public ZenCodingNode getLeftOperand() {
-    return myLeftOperand;
-  }
+	public ZenCodingNode getLeftOperand()
+	{
+		return myLeftOperand;
+	}
 
-  public ZenCodingNode getRightOperand() {
-    return myRightOperand;
-  }
+	public ZenCodingNode getRightOperand()
+	{
+		return myRightOperand;
+	}
 
-  @NotNull
-  @Override
-  public List<ZenCodingNode> getChildren() {
-    return ContainerUtil.newLinkedList(myLeftOperand, myRightOperand);
-  }
+	@NotNull
+	@Override
+	public List<ZenCodingNode> getChildren()
+	{
+		return ContainerUtil.newLinkedList(myLeftOperand, myRightOperand);
+	}
 
-  @NotNull
-  @Override
-  public List<GenerationNode> expand(int numberInIteration,
-                                     int totalIterations, String surroundedText,
-                                     CustomTemplateCallback callback,
-                                     boolean insertSurroundedTextAtTheEnd, GenerationNode parent) {
-    if (myLeftOperand instanceof MulOperationNode || (myLeftOperand instanceof UnaryMulOperationNode && surroundedText != null)) {
-      List<GenerationNode> result = new ArrayList<GenerationNode>();
-      if (myLeftOperand instanceof MulOperationNode) {
-        MulOperationNode mul = (MulOperationNode)myLeftOperand;
-        for (int i = 0; i < mul.getRightOperand(); i++) {
-          List<GenerationNode> parentNodes = mul.getLeftOperand().expand(i, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd,
-                                                                         parent);
-          for (GenerationNode parentNode : parentNodes) {
-            myRightOperand.expand(i, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, parentNode);
-          }
-          result.addAll(parentNodes);
-        }
-      }
-      else {
-        UnaryMulOperationNode unaryMul = (UnaryMulOperationNode)myLeftOperand;
-        String[] lines = LineTokenizer.tokenize(surroundedText, false);
-        for (int i = 0; i < lines.length; i++) {
-          String line = lines[i].trim();
-          List<GenerationNode> parentNodes = unaryMul.getOperand().expand(i, totalIterations, line, callback, insertSurroundedTextAtTheEnd, parent);
-          for (GenerationNode parentNode : parentNodes) {
-            myRightOperand.expand(i, totalIterations, line, callback, insertSurroundedTextAtTheEnd, parentNode);
-          }
-          result.addAll(parentNodes);
-        }
-      }
-      return result;
-    }
-    List<GenerationNode> leftGenNodes = myLeftOperand.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd,
-                                                             parent);
-    for (GenerationNode leftGenNode : leftGenNodes) {
-      myRightOperand.expand(numberInIteration,totalIterations , surroundedText, callback, insertSurroundedTextAtTheEnd, leftGenNode);
-    }
-    return leftGenNodes;
-  }
+	@NotNull
+	@Override
+	public List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback,
+			boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
+	{
+		if(myLeftOperand instanceof MulOperationNode || (myLeftOperand instanceof UnaryMulOperationNode && surroundedText != null))
+		{
+			List<GenerationNode> result = new ArrayList<GenerationNode>();
+			if(myLeftOperand instanceof MulOperationNode)
+			{
+				MulOperationNode mul = (MulOperationNode) myLeftOperand;
+				for(int i = 0; i < mul.getRightOperand(); i++)
+				{
+					List<GenerationNode> parentNodes = mul.getLeftOperand().expand(i, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd,
+							parent);
+					for(GenerationNode parentNode : parentNodes)
+					{
+						myRightOperand.expand(i, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, parentNode);
+					}
+					result.addAll(parentNodes);
+				}
+			}
+			else
+			{
+				UnaryMulOperationNode unaryMul = (UnaryMulOperationNode) myLeftOperand;
+				String[] lines = LineTokenizer.tokenize(surroundedText, false);
+				for(int i = 0; i < lines.length; i++)
+				{
+					String line = lines[i].trim();
+					List<GenerationNode> parentNodes = unaryMul.getOperand().expand(i, totalIterations, line, callback, insertSurroundedTextAtTheEnd, parent);
+					for(GenerationNode parentNode : parentNodes)
+					{
+						myRightOperand.expand(i, totalIterations, line, callback, insertSurroundedTextAtTheEnd, parentNode);
+					}
+					result.addAll(parentNodes);
+				}
+			}
+			return result;
+		}
+		List<GenerationNode> leftGenNodes = myLeftOperand.expand(numberInIteration, totalIterations, surroundedText, callback,
+				insertSurroundedTextAtTheEnd, parent);
+		for(GenerationNode leftGenNode : leftGenNodes)
+		{
+			myRightOperand.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, leftGenNode);
+		}
+		return leftGenNodes;
+	}
 
-  @Override
-  public String toString() {
-    return ">";
-  }
+	@Override
+	public String toString()
+	{
+		return ">";
+	}
 }

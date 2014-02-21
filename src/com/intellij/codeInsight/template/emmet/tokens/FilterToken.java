@@ -18,19 +18,23 @@ package com.intellij.codeInsight.template.emmet.tokens;
 /**
  * @author Eugene.Kudelevsky
  */
-public class FilterToken extends ZenCodingToken {
-  private final String mySuffix;
+public class FilterToken extends ZenCodingToken
+{
+	private final String mySuffix;
 
-  public FilterToken(String suffix) {
-    mySuffix = suffix;
-  }
+	public FilterToken(String suffix)
+	{
+		mySuffix = suffix;
+	}
 
-  public String getSuffix() {
-    return mySuffix;
-  }
+	public String getSuffix()
+	{
+		return mySuffix;
+	}
 
-  @Override
-  public String toString() {
-    return "|" + mySuffix;
-  }
+	@Override
+	public String toString()
+	{
+		return "|" + mySuffix;
+	}
 }

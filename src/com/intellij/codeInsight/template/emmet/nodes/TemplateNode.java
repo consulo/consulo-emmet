@@ -15,6 +15,11 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.emmet.ZenCodingUtil;
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
@@ -22,64 +27,65 @@ import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Eugene.Kudelevsky
  */
-public class TemplateNode extends ZenCodingNode {
-  private final TemplateToken myTemplateToken;
-  @Nullable private final ZenCodingGenerator myGenerator;
+public class TemplateNode extends ZenCodingNode
+{
+	private final TemplateToken myTemplateToken;
+	@Nullable
+	private final ZenCodingGenerator myGenerator;
 
-  public TemplateNode(TemplateToken templateToken) {
-    this(templateToken, null);
-  }
+	public TemplateNode(TemplateToken templateToken)
+	{
+		this(templateToken, null);
+	}
 
-  public TemplateNode(TemplateToken token, @Nullable ZenCodingGenerator generator) {
-    myTemplateToken = token;
-    myGenerator = generator;
-  }
+	public TemplateNode(TemplateToken token, @Nullable ZenCodingGenerator generator)
+	{
+		myTemplateToken = token;
+		myGenerator = generator;
+	}
 
-  public TemplateToken getTemplateToken() {
-    return myTemplateToken;
-  }
+	public TemplateToken getTemplateToken()
+	{
+		return myTemplateToken;
+	}
 
-  @NotNull
-  @Override
-  public List<GenerationNode> expand(int numberInIteration,
-                                     int totalIterations, String surroundedText,
-                                     CustomTemplateCallback callback,
-                                     boolean insertSurroundedTextAtTheEnd, GenerationNode parent) {
-    TemplateToken templateToken = myTemplateToken;
-    String templateKey = templateToken.getKey();
-    if (myGenerator != null && StringUtil.containsChar(templateKey, '$') && callback.findApplicableTemplate(templateKey) == null) {
-      String newTemplateKey = ZenCodingUtil.replaceMarkers(templateKey, numberInIteration, totalIterations, surroundedText);
-      TemplateToken newTemplateToken = new TemplateToken(newTemplateKey,
-                                        templateToken.getAttribute2Value());
+	@NotNull
+	@Override
+	public List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback,
+			boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
+	{
+		TemplateToken templateToken = myTemplateToken;
+		String templateKey = templateToken.getKey();
+		if(myGenerator != null && StringUtil.containsChar(templateKey, '$') && callback.findApplicableTemplate(templateKey) == null)
+		{
+			String newTemplateKey = ZenCodingUtil.replaceMarkers(templateKey, numberInIteration, totalIterations, surroundedText);
+			TemplateToken newTemplateToken = new TemplateToken(newTemplateKey, templateToken.getAttribute2Value());
 
-      TemplateImpl template = myGenerator.createTemplateByKey(newTemplateKey);
-      if (template != null) {
-        newTemplateToken.setTemplate(template, callback);
-        templateToken = newTemplateToken;
-      }
-  }
+			TemplateImpl template = myGenerator.createTemplateByKey(newTemplateKey);
+			if(template != null)
+			{
+				newTemplateToken.setTemplate(template, callback);
+				templateToken = newTemplateToken;
+			}
+		}
 
-  GenerationNode node = new GenerationNode(templateToken, numberInIteration, totalIterations,
-                                           surroundedText, insertSurroundedTextAtTheEnd, parent);
-  return Arrays.asList(node);
-}
+		GenerationNode node = new GenerationNode(templateToken, numberInIteration, totalIterations, surroundedText, insertSurroundedTextAtTheEnd, parent);
+		return Arrays.asList(node);
+	}
 
-  @Override
-  public String toString() {
-    String result = myTemplateToken.getKey();
-    List<Pair<String, String>> attributes = myTemplateToken.getAttribute2Value();
-    if (!attributes.isEmpty()) {
-      result += "[" + StringUtil.join(myTemplateToken.getAttribute2Value(), ",") + "]";
-    }
-    return "Template(" + result + ")";
-  }
+	@Override
+	public String toString()
+	{
+		String result = myTemplateToken.getKey();
+		List<Pair<String, String>> attributes = myTemplateToken.getAttribute2Value();
+		if(!attributes.isEmpty())
+		{
+			result += "[" + StringUtil.join(myTemplateToken.getAttribute2Value(), ",") + "]";
+		}
+		return "Template(" + result + ")";
+	}
 }

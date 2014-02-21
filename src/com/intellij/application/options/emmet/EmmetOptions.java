@@ -15,13 +15,13 @@
  */
 package com.intellij.application.options.emmet;
 
+import org.consulo.lombok.annotations.ApplicationService;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.util.xmlb.XmlSerializerUtil;
-import org.consulo.lombok.annotations.ApplicationService;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * User: zolotov
@@ -29,39 +29,47 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApplicationService
 @State(
-  name = "EmmetOptions",
-  storages = {
-    @Storage(
-      file = StoragePathMacros.APP_CONFIG + "/editor.xml"
-    )}
+		name = "EmmetOptions",
+		storages = {
+				@Storage(
+						file = StoragePathMacros.APP_CONFIG + "/editor.xml"
+				)
+		}
 )
-public class EmmetOptions implements PersistentStateComponent<EmmetOptions> {
-  private boolean myEmmetEnabled = true;
-  private int myEmmetExpandShortcut = '\t';
+public class EmmetOptions implements PersistentStateComponent<EmmetOptions>
+{
+	private boolean myEmmetEnabled = true;
+	private int myEmmetExpandShortcut = '\t';
 
-  public void setEmmetExpandShortcut(int emmetExpandShortcut) {
-    myEmmetExpandShortcut = emmetExpandShortcut;
-  }
+	public void setEmmetExpandShortcut(int emmetExpandShortcut)
+	{
+		myEmmetExpandShortcut = emmetExpandShortcut;
+	}
 
-  public int getEmmetExpandShortcut() {
-    return myEmmetExpandShortcut;
-  }
+	public int getEmmetExpandShortcut()
+	{
+		return myEmmetExpandShortcut;
+	}
 
-  public boolean isEmmetEnabled() {
-    return myEmmetEnabled;
-  }
+	public boolean isEmmetEnabled()
+	{
+		return myEmmetEnabled;
+	}
 
-  public void setEmmetEnabled(boolean emmetEnabled) {
-    myEmmetEnabled = emmetEnabled;
-  }
+	public void setEmmetEnabled(boolean emmetEnabled)
+	{
+		myEmmetEnabled = emmetEnabled;
+	}
 
-  @Nullable
-  @Override
-  public EmmetOptions getState() {
-    return this;
-  }
+	@Nullable
+	@Override
+	public EmmetOptions getState()
+	{
+		return this;
+	}
 
-  public void loadState(final EmmetOptions state) {
-    XmlSerializerUtil.copyBean(state, this);
-  }
+	public void loadState(final EmmetOptions state)
+	{
+		XmlSerializerUtil.copyBean(state, this);
+	}
 }

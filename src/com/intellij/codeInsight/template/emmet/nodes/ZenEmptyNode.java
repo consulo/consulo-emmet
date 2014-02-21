@@ -15,31 +15,31 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import com.intellij.codeInsight.template.CustomTemplateCallback;
 
 /**
  * User: zolotov
  * Date: 1/31/13
  */
-public class ZenEmptyNode extends ZenCodingNode {
-  public static final ZenCodingNode INSTANCE = new ZenEmptyNode();
+public class ZenEmptyNode extends ZenCodingNode
+{
+	public static final ZenCodingNode INSTANCE = new ZenEmptyNode();
 
-  @NotNull
-  @Override
-  public List<GenerationNode> expand(int numberInIteration,
-                                     int totalIterations, String surroundedText,
-                                     CustomTemplateCallback callback,
-                                     boolean insertSurroundedTextAtTheEnd,
-                                     GenerationNode parent) {
-    return Collections.emptyList();
-  }
+	@NotNull
+	@Override
+	public List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback,
+			boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
+	{
+		return Collections.emptyList();
+	}
 
-  @Override
-  public String toString() {
-    return "EMPTY_NODE";
-  }
+	@Override
+	public String toString()
+	{
+		return "EMPTY_NODE";
+	}
 }
