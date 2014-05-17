@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2010 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +27,7 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.google.common.base.Strings;
 import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.LiveTemplateBuilder;
 import com.intellij.codeInsight.template.emmet.ZenCodingUtil;
@@ -35,13 +38,17 @@ import com.intellij.codeInsight.template.emmet.generators.XmlZenCodingGeneratorI
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.ide.highlighter.XmlFileType;
+import com.intellij.injected.editor.DocumentWindowImpl;
 import com.intellij.lang.xml.XMLLanguage;
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.undo.UndoConstants;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
@@ -65,7 +72,7 @@ import com.intellij.xml.util.HtmlUtil;
 public class GenerationNode extends UserDataHolderBase
 {
 	private final TemplateToken myTemplateToken;
-	private final List<GenerationNode> myChildren = new ArrayList<GenerationNode>();
+	private final List<GenerationNode> myChildren = newArrayList();
 	private final int myNumberInIteration;
 	private final int myTotalIterations;
 	private String mySurroundedText;
@@ -76,15 +83,26 @@ public class GenerationNode extends UserDataHolderBase
 	private GenerationNode myParent;
 	private boolean myContainsSurroundedTextMarker = false;
 
-	public GenerationNode(TemplateToken templateToken, int numberInIteration, int totalIterations, String surroundedText,
-			boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
+	public GenerationNode(
+			TemplateToken templateToken,
+			int numberInIteration,
+			int totalIterations,
+			String surroundedText,
+			boolean insertSurroundedTextAtTheEnd,
+			GenerationNode parent)
 	{
 		this(templateToken, numberInIteration, totalIterations, surroundedText, insertSurroundedTextAtTheEnd, parent, false);
 	}
 
 
-	public GenerationNode(TemplateToken templateToken, int numberInIteration, int totalIterations, String surroundedText,
-			boolean insertSurroundedTextAtTheEnd, GenerationNode parent, boolean insertNewLineBetweenNodes)
+	public GenerationNode(
+			TemplateToken templateToken,
+			int numberInIteration,
+			int totalIterations,
+			String surroundedText,
+			boolean insertSurroundedTextAtTheEnd,
+			GenerationNode parent,
+			boolean insertNewLineBetweenNodes)
 	{
 		myTemplateToken = templateToken;
 		myNumberInIteration = numberInIteration;
@@ -146,31 +164,64 @@ public class GenerationNode extends UserDataHolderBase
 	}
 
 	@NotNull
-	public TemplateImpl generate(@NotNull CustomTemplateCallback callback, @Nullable ZenCodingGenerator generator,
-			@NotNull Collection<ZenCodingFilter> filters, boolean insertSurroundedText)
+	public TemplateImpl generate(
+			@NotNull CustomTemplateCallback callback,
+			@Nullable ZenCodingGenerator generator,
+			@NotNull Collection<ZenCodingFilter> filters,
+			boolean insertSurroundedText,
+			int segmentsLimit)
 	{
 		myContainsSurroundedTextMarker = !(insertSurroundedText && myInsertSurroundedTextAtTheEnd);
 
-		boolean singleLineFilterEnabled = false;
-
 		GenerationNode generationNode = this;
+		if(generationNode != this)
+		{
+			return generationNode.generate(callback, generator, Collections.<ZenCodingFilter>emptyList(), insertSurroundedText, segmentsLimit);
+		}
+
+		boolean shouldNotReformatTemplate = false;
+		boolean oneLineTemplateExpanding = false;
 		for(ZenCodingFilter filter : filters)
 		{
 			generationNode = filter.filterNode(generationNode);
 			if(filter instanceof SingleLineEmmetFilter)
 			{
-				singleLineFilterEnabled = true;
+				shouldNotReformatTemplate = true;
+				oneLineTemplateExpanding = true;
 			}
 		}
 
-		if(generationNode != this)
+		CodeStyleSettings settings = CodeStyleSettingsManager.getSettings(callback.getProject());
+		String indentStr;
+		if(callback.isInInjectedFragment())
 		{
-			return generationNode.generate(callback, generator, Collections.<ZenCodingFilter>emptyList(), insertSurroundedText);
+			Editor editor = callback.getEditor();
+			Document document = editor.getDocument();
+			if(document instanceof DocumentWindowImpl && ((DocumentWindowImpl) document).isOneLine())
+			{
+		/*
+         * If document is one-line that in the moment of inserting text,
+         * new line chars will be filtered (see DocumentWindowImpl#insertString).
+         * So in this case we should filter text by SingleLineAvoid in order to avoid
+         * inconsistency of template segments.
+         */
+				oneLineTemplateExpanding = true;
+				filters.add(new SingleLineEmmetFilter());
+			}
+			indentStr = "";
+		}
+		else if(settings.useTabCharacter(callback.getFileType()))
+		{
+			indentStr = "\t";
+		}
+		else
+		{
+			int tabSize = settings.getTabSize(callback.getFileType());
+			indentStr = StringUtil.repeatSymbol(' ', tabSize);
 		}
 
-		LiveTemplateBuilder builder = new LiveTemplateBuilder();
+		LiveTemplateBuilder builder = new LiveTemplateBuilder(segmentsLimit);
 		int end = -1;
-
 		boolean hasChildren = myChildren.size() > 0;
 
 		TemplateImpl parentTemplate;
@@ -178,7 +229,7 @@ public class GenerationNode extends UserDataHolderBase
 		if(myTemplateToken instanceof TemplateToken && generator instanceof XmlZenCodingGenerator)
 		{
 			TemplateToken xmlTemplateToken = myTemplateToken;
-			List<Pair<String, String>> attr2value = new ArrayList<Pair<String, String>>(xmlTemplateToken.getAttribute2Value());
+			List<Couple<String>> attr2value = new ArrayList<Couple<String>>(xmlTemplateToken.getAttribute2Value());
 			parentTemplate = invokeXmlTemplate(xmlTemplateToken, callback, generator, hasChildren, attr2value);
 			predefinedValues = buildPredefinedValues(attr2value, (XmlZenCodingGenerator) generator, hasChildren);
 		}
@@ -197,7 +248,7 @@ public class GenerationNode extends UserDataHolderBase
 		parentTemplate.setString(s);
 
 		final String txt = hasChildren || myContainsSurroundedTextMarker ? null : mySurroundedText;
-		parentTemplate = expandTemplate(parentTemplate, predefinedValues, txt);
+		parentTemplate = expandTemplate(parentTemplate, predefinedValues, txt, segmentsLimit);
 
 		int offset = builder.insertTemplate(0, parentTemplate, null);
 		int newOffset = gotoChild(callback.getProject(), builder.getText(), offset, 0, builder.length());
@@ -212,30 +263,15 @@ public class GenerationNode extends UserDataHolderBase
 		}
 		LiveTemplateBuilder.Marker marker = offset < builder.length() ? builder.createMarker(offset) : null;
 
-		CodeStyleSettings settings = CodeStyleSettingsManager.getSettings(callback.getProject());
-		String indentStr;
-		if(callback.isInInjectedFragment())
-		{
-			indentStr = "";
-		}
-		else if(settings.useTabCharacter(callback.getFileType()))
-		{
-			indentStr = "\t";
-		}
-		else
-		{
-			int tabSize = settings.getTabSize(callback.getFileType());
-			indentStr = StringUtil.repeatSymbol(' ', tabSize);
-		}
-
+		//noinspection ForLoopReplaceableByForEach
 		for(int i = 0, myChildrenSize = myChildren.size(); i < myChildrenSize; i++)
 		{
 			GenerationNode child = myChildren.get(i);
-			TemplateImpl childTemplate = child.generate(callback, generator, filters, !myContainsSurroundedTextMarker);
+			TemplateImpl childTemplate = child.generate(callback, generator, filters, !myContainsSurroundedTextMarker, segmentsLimit);
 
 			boolean blockTag = child.isBlockTag();
 
-			if(!singleLineFilterEnabled && blockTag && !isNewLineBefore(builder.getText(), offset))
+			if(!oneLineTemplateExpanding && blockTag && !isNewLineBefore(builder.getText(), offset))
 			{
 				builder.insertText(offset, "\n" + indentStr, false);
 				offset += indentStr.length() + 1;
@@ -244,7 +280,7 @@ public class GenerationNode extends UserDataHolderBase
 			int e = builder.insertTemplate(offset, childTemplate, null);
 			offset = marker != null ? marker.getEndOffset() : builder.length();
 
-			if(!singleLineFilterEnabled && ((blockTag && !isNewLineAfter(builder.getText(), offset)) || myInsertNewLineBetweenNodes))
+			if(!oneLineTemplateExpanding && ((blockTag && !isNewLineAfter(builder.getText(), offset)) || myInsertNewLineBetweenNodes))
 			{
 				builder.insertText(offset, "\n" + indentStr, false);
 				offset += indentStr.length() + 1;
@@ -255,15 +291,15 @@ public class GenerationNode extends UserDataHolderBase
 				end = e;
 			}
 		}
-		if(singleLineFilterEnabled)
+		if(shouldNotReformatTemplate)
 		{
 			builder.setIsToReformat(false);
 		}
 		return builder.buildTemplate();
 	}
 
-	private static TemplateImpl invokeTemplate(TemplateToken token, boolean hasChildren, final CustomTemplateCallback callback,
-			@Nullable ZenCodingGenerator generator)
+	private static TemplateImpl invokeTemplate(
+			TemplateToken token, boolean hasChildren, final CustomTemplateCallback callback, @Nullable ZenCodingGenerator generator)
 	{
 		TemplateImpl template = token.getTemplate();
 		if(generator != null)
@@ -276,39 +312,42 @@ public class GenerationNode extends UserDataHolderBase
 		return template;
 	}
 
-	private TemplateImpl invokeXmlTemplate(final TemplateToken token, CustomTemplateCallback callback, @Nullable ZenCodingGenerator generator,
-			final boolean hasChildren, final List<Pair<String, String>> attr2value)
+	private TemplateImpl invokeXmlTemplate(
+			final TemplateToken token,
+			CustomTemplateCallback callback,
+			@Nullable ZenCodingGenerator generator,
+			final boolean hasChildren,
+			final List<Couple<String>> attr2value)
 	{
-	/*assert generator == null || generator instanceof XmlZenCodingGenerator :
+    /*assert generator == null || generator instanceof XmlZenCodingGenerator :
       "The generator cannot process TemplateToken because it doesn't inherit XmlZenCodingGenerator";*/
 
 		TemplateImpl template = token.getTemplate();
 		assert template != null;
 
 		final XmlFile xmlFile = token.getFile();
-		XmlDocument document = xmlFile.getDocument();
-		if(document != null)
+		PsiFileFactory fileFactory = PsiFileFactory.getInstance(xmlFile.getProject());
+		XmlFile dummyFile = (XmlFile) fileFactory.createFileFromText("dummy.xml", StdFileTypes.XML, xmlFile.getText());
+		final XmlTag tag = dummyFile.getRootTag();
+		if(tag != null)
 		{
-			final XmlTag tag = document.getRootTag();
-			for(Pair<String, String> pair : attr2value)
+			for(Couple<String> pair : attr2value)
 			{
-				if(StringUtil.isEmpty(pair.second))
+				if(Strings.isNullOrEmpty(pair.second))
 				{
-					template.addVariable(pair.first, "", "", true);
+					template.addVariable(prepareVariableName(pair.first), "", "", true);
 				}
 			}
-			if(tag != null)
+			XmlTag tag1 = hasChildren ? expandEmptyTagIfNecessary(tag) : tag;
+			setAttributeValues(tag1, attr2value);
+			XmlFile physicalFile = (XmlFile) fileFactory.createFileFromText("dummy.xml", StdFileTypes.XML, tag1.getContainingFile().getText(),
+					LocalTimeCounter.currentTime(), true);
+			VirtualFile vFile = physicalFile.getVirtualFile();
+			if(vFile != null)
 			{
-				ApplicationManager.getApplication().runWriteAction(new Runnable()
-				{
-					public void run()
-					{
-						XmlTag tag1 = hasChildren ? expandEmptyTagIfNeccessary(tag) : tag;
-						setAttributeValues(tag1, attr2value);
-						token.setFile((XmlFile) tag1.getContainingFile());
-					}
-				});
+				vFile.putUserData(UndoConstants.DONT_RECORD_UNDO, Boolean.TRUE);
 			}
+			token.setFile(physicalFile);
 		}
 		ZenCodingGenerator zenCodingGenerator = generator != null ? generator : XmlZenCodingGeneratorImpl.INSTANCE;
 		template = zenCodingGenerator.generateTemplate(token, hasChildren, callback.getContext());
@@ -316,10 +355,16 @@ public class GenerationNode extends UserDataHolderBase
 		return template;
 	}
 
-	@NotNull
-	private static TemplateImpl expandTemplate(@NotNull TemplateImpl template, Map<String, String> predefinedVarValues, String surroundedText)
+	private static String prepareVariableName(@NotNull String attributeName)
 	{
-		LiveTemplateBuilder builder = new LiveTemplateBuilder();
+		return StringUtil.replaceChar(attributeName, '-', '_');
+	}
+
+	@NotNull
+	private static TemplateImpl expandTemplate(
+			@NotNull TemplateImpl template, Map<String, String> predefinedVarValues, String surroundedText, int segmentsLimit)
+	{
+		LiveTemplateBuilder builder = new LiveTemplateBuilder(segmentsLimit);
 		if(predefinedVarValues == null && surroundedText == null)
 		{
 			return template;
@@ -328,15 +373,13 @@ public class GenerationNode extends UserDataHolderBase
 		if(surroundedText != null)
 		{
 			builder.insertText(offset, surroundedText, true);
-      /*if (offset < builder.length()) {
-        builder.insertVariableSegment(offset, TemplateImpl.END);
-      }*/
+			builder.setIsToReformat(true);
 		}
 		return builder.buildTemplate();
 	}
 
 	@NotNull
-	private static XmlTag expandEmptyTagIfNeccessary(@NotNull XmlTag tag)
+	private static XmlTag expandEmptyTagIfNecessary(@NotNull XmlTag tag)
 	{
 		StringBuilder builder = new StringBuilder();
 		boolean flag = false;
@@ -361,7 +404,7 @@ public class GenerationNode extends UserDataHolderBase
 
 	private static int gotoChild(Project project, CharSequence text, int offset, int start, int end)
 	{
-		PsiFile file = PsiFileFactory.getInstance(project).createFileFromText("dummy.xml", XmlFileType.INSTANCE, text, LocalTimeCounter.currentTime(),
+		PsiFile file = PsiFileFactory.getInstance(project).createFileFromText("dummy.xml", StdFileTypes.XML, text, LocalTimeCounter.currentTime(),
 				false);
 
 		PsiElement element = file.findElementAt(offset);
@@ -413,15 +456,15 @@ public class GenerationNode extends UserDataHolderBase
 	}
 
 	@Nullable
-	private Map<String, String> buildPredefinedValues(List<Pair<String, String>> attribute2value, @Nullable XmlZenCodingGenerator generator,
-			boolean hasChildren)
+	private Map<String, String> buildPredefinedValues(
+			List<Couple<String>> attribute2value, @Nullable XmlZenCodingGenerator generator, boolean hasChildren)
 	{
 		if(generator == null)
 		{
 			return Collections.emptyMap();
 		}
 
-		for(Pair<String, String> pair : attribute2value)
+		for(Couple<String> pair : attribute2value)
 		{
 			if(ZenCodingUtil.containsSurroundedTextMarker(pair.second))
 			{
@@ -441,19 +484,19 @@ public class GenerationNode extends UserDataHolderBase
 		return predefinedValues;
 	}
 
-	private void setAttributeValues(XmlTag tag, List<Pair<String, String>> attr2value)
+	private void setAttributeValues(XmlTag tag, List<Couple<String>> attr2value)
 	{
-		for(Iterator<Pair<String, String>> iterator = attr2value.iterator(); iterator.hasNext(); )
+		for(Iterator<Couple<String>> iterator = attr2value.iterator(); iterator.hasNext(); )
 		{
-			Pair<String, String> pair = iterator.next();
+			Couple<String> pair = iterator.next();
 			if(tag.getAttribute(pair.first) != null)
 			{
 				if(ZenCodingUtil.containsSurroundedTextMarker(pair.second))
 				{
 					myContainsSurroundedTextMarker = true;
 				}
-				tag.setAttribute(pair.first, StringUtil.isEmpty(pair.second) ? "$" + pair.first + "$" : ZenCodingUtil.getValue(pair.second, myNumberInIteration,
-						myTotalIterations, mySurroundedText));
+				tag.setAttribute(pair.first, Strings.isNullOrEmpty(pair.second) ? "$" + prepareVariableName(pair.first) + "$" : ZenCodingUtil
+						.getValue(pair.second, myNumberInIteration, myTotalIterations, mySurroundedText));
 				iterator.remove();
 			}
 		}

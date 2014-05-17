@@ -36,7 +36,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.options.UnnamedConfigurable;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -60,8 +60,8 @@ public class XmlZenCodingGeneratorImpl extends XmlZenCodingGenerator
 
 	@Override
 	@NotNull
-	public String toString(@NotNull XmlTag tag, @NotNull List<Pair<String, String>> attribute2Value, boolean hasChildren,
-			@NotNull PsiElement context)
+	public String toString(
+			@NotNull XmlTag tag, @NotNull List<Couple<String>> attribute2Value, boolean hasChildren, @NotNull PsiElement context)
 	{
 		FileType fileType = context.getContainingFile().getFileType();
 		if(isTrueXml(fileType))
@@ -73,13 +73,17 @@ public class XmlZenCodingGeneratorImpl extends XmlZenCodingGenerator
 
 	@Override
 	@NotNull
-	public String buildAttributesString(@NotNull List<Pair<String, String>> attribute2value, boolean hasChildren, int numberInIteration,
-			int totalIterations, @Nullable String surroundedText)
+	public String buildAttributesString(
+			@NotNull List<Couple<String>> attribute2value,
+			boolean hasChildren,
+			int numberInIteration,
+			int totalIterations,
+			@Nullable String surroundedText)
 	{
 		StringBuilder result = new StringBuilder();
-		for(Iterator<Pair<String, String>> it = attribute2value.iterator(); it.hasNext(); )
+		for(Iterator<Couple<String>> it = attribute2value.iterator(); it.hasNext(); )
 		{
-			Pair<String, String> pair = it.next();
+			Couple<String> pair = it.next();
 			String name = pair.first;
 			String value = ZenCodingUtil.getValue(pair.second, numberInIteration, totalIterations, surroundedText);
 			result.append(getAttributeString(name, value));

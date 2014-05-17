@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2010 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.Couple;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlDocument;
 import com.intellij.psi.xml.XmlFile;
@@ -71,12 +71,17 @@ public abstract class XmlZenCodingGenerator extends ZenCodingGenerator
 		return file.getText();
 	}
 
-	public abstract String toString(@NotNull XmlTag tag, @NotNull List<Pair<String, String>> attribute2Value, boolean hasChildren,
-			@NotNull PsiElement context);
+	public abstract String toString(
+			@NotNull XmlTag tag, @NotNull List<Couple<String>> attribute2Value, boolean hasChildren, @NotNull PsiElement context);
 
 	@NotNull
-	public abstract String buildAttributesString(@NotNull List<Pair<String, String>> attribute2value, boolean hasChildren, int numberInIteration,
-			int totalIterations, @Nullable String surroundedText);
+	public abstract String buildAttributesString(
+			@NotNull List<Couple<String>> attribute2value,
+			boolean hasChildren,
+			int numberInIteration,
+			int totalIterations,
+			@Nullable String surroundedText);
 
+	@Override
 	public abstract boolean isMyContext(@NotNull PsiElement context, boolean wrapping);
 }

@@ -5,9 +5,10 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;"
-			  name="!!!4t" toReformat="true" toShortenFQNames="true"
-			  value="&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;">
+	<template
+			description="&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;"
+			name="!!!4t" toReformat="true" toShortenFQNames="true"
+			value="&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
@@ -19,23 +20,26 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;"
-			  name="!!!xt" toReformat="true" toShortenFQNames="true"
-			  value="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;">
+	<template
+			description="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;"
+			name="!!!xt" toReformat="true" toShortenFQNames="true"
+			value="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;"
-			  name="!!!xs" toReformat="true" toShortenFQNames="true"
-			  value="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;">
+	<template
+			description="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;"
+			name="!!!xs" toReformat="true" toShortenFQNames="true"
+			value="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;&gt;"
-			  name="!!!xxs" toReformat="true" toShortenFQNames="true"
-			  value="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;&gt;">
+	<template
+			description="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;&gt;"
+			name="!!!xxs" toReformat="true" toShortenFQNames="true"
+			value="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
@@ -46,7 +50,8 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="" name="cc:ie6" toReformat="true" toShortenFQNames="true" value="&lt;!--[if lte IE 6]&gt;&#10;  $END$&#10;&lt;![endif]--&gt;">
+	<template description="" name="cc:ie6" toReformat="true" toShortenFQNames="true"
+			  value="&lt;!--[if lte IE 6]&gt;&#10;  $END$&#10;&lt;![endif]--&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
@@ -56,7 +61,8 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="" name="cc:noie" toReformat="true" toShortenFQNames="true" value="&lt;!--[if !IE]&gt;&lt;!--&gt;&#10;  $END$&#10;&lt;!--&lt;![endif]--&gt;">
+	<template description="" name="cc:noie" toReformat="true" toShortenFQNames="true"
+			  value="&lt;!--[if !IE]&gt;&lt;!--&gt;&#10;  $END$&#10;&lt;!--&lt;![endif]--&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
@@ -69,37 +75,43 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;a href=&quot;...&quot;&gt;...&lt;/a&gt;" name="a" toReformat="true" toShortenFQNames="true" value="&lt;a href=&quot;$VAR0$&quot;&gt;$END$&lt;/a&gt;">
+	<template description="&lt;a href=&quot;...&quot;&gt;...&lt;/a&gt;" name="a" toReformat="true" toShortenFQNames="true"
+			  value="&lt;a href=&quot;$VAR0$&quot;&gt;$END$&lt;/a&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;a href=&quot;http://...&quot;&gt;...&lt;/a&gt;" name="a:link" toReformat="true" toShortenFQNames="true" value="&lt;a href=&quot;http://$VAR0$&quot;&gt;$END$&lt;/a&gt;">
+	<template description="&lt;a href=&quot;http://...&quot;&gt;...&lt;/a&gt;" name="a:link" toReformat="true" toShortenFQNames="true"
+			  value="&lt;a href=&quot;http://$VAR0$&quot;&gt;$END$&lt;/a&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;a href=&quot;mailto:...&quot;&gt;...&lt;/a&gt;" name="a:mail" toReformat="true" toShortenFQNames="true" value="&lt;a href=&quot;mailto:$VAR0$&quot;&gt;$END$&lt;/a&gt;">
+	<template description="&lt;a href=&quot;mailto:...&quot;&gt;...&lt;/a&gt;" name="a:mail" toReformat="true" toShortenFQNames="true"
+			  value="&lt;a href=&quot;mailto:$VAR0$&quot;&gt;$END$&lt;/a&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;abbr title=&quot;...&quot;&gt;...&lt;/abbr&gt;" name="abbr" toReformat="true" toShortenFQNames="true" value="&lt;abbr title=&quot;$VAR0$&quot;&gt;$END$&lt;/abbr&gt;">
+	<template description="&lt;abbr title=&quot;...&quot;&gt;...&lt;/abbr&gt;" name="abbr" toReformat="true" toShortenFQNames="true"
+			  value="&lt;abbr title=&quot;$VAR0$&quot;&gt;$END$&lt;/abbr&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;acronym title=&quot;...&quot;&gt;...&lt;/acronym&gt;" name="acronym" toReformat="true" toShortenFQNames="true" value="&lt;acronym title=&quot;$VAR0$&quot;&gt;$END$&lt;/acronym&gt;">
+	<template description="&lt;acronym title=&quot;...&quot;&gt;...&lt;/acronym&gt;" name="acronym" toReformat="true" toShortenFQNames="true"
+			  value="&lt;acronym title=&quot;$VAR0$&quot;&gt;$END$&lt;/acronym&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;base href=&quot;...&quot;&gt;" name="base" toReformat="true" toShortenFQNames="true" value="&lt;base href=&quot;$VAR0$&quot;/&gt;">
+	<template description="&lt;base href=&quot;...&quot;&gt;" name="base" toReformat="true" toShortenFQNames="true"
+			  value="&lt;base href=&quot;$VAR0$&quot;/&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
@@ -125,18 +137,21 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;bdo dir=&quot;...&quot;&gt;...&lt;/bdo&gt;" name="bdo" toReformat="true" toShortenFQNames="true" value="&lt;bdo dir=&quot;$VAR0$&quot;&gt;$END$&lt;/bdo&gt;">
+	<template description="&lt;bdo dir=&quot;...&quot;&gt;...&lt;/bdo&gt;" name="bdo" toReformat="true" toShortenFQNames="true"
+			  value="&lt;bdo dir=&quot;$VAR0$&quot;&gt;$END$&lt;/bdo&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;bdo dir=&quot;rtl&quot;&gt;...&lt;/bdo&gt;" name="bdo:r" toReformat="true" toShortenFQNames="true" value="&lt;bdo dir=&quot;rtl&quot;&gt;$END$&lt;/bdo&gt;">
+	<template description="&lt;bdo dir=&quot;rtl&quot;&gt;...&lt;/bdo&gt;" name="bdo:r" toReformat="true" toShortenFQNames="true"
+			  value="&lt;bdo dir=&quot;rtl&quot;&gt;$END$&lt;/bdo&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;bdo dir=&quot;ltr&quot;&gt;...&lt;/bdo&gt;" name="bdo:l" toReformat="true" toShortenFQNames="true" value="&lt;bdo dir=&quot;ltr&quot;&gt;$END$&lt;/bdo&gt;">
+	<template description="&lt;bdo dir=&quot;ltr&quot;&gt;...&lt;/bdo&gt;" name="bdo:l" toReformat="true" toShortenFQNames="true"
+			  value="&lt;bdo dir=&quot;ltr&quot;&gt;$END$&lt;/bdo&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
@@ -146,7 +161,8 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;link rel=&quot;stylesheet&quot; href=&quot;...&quot;&gt;" name="link" toReformat="true" toShortenFQNames="true" value="&lt;link rel=&quot;stylesheet&quot; href=&quot;$END$&quot;/&gt;">
+	<template description="&lt;link rel=&quot;stylesheet&quot; href=&quot;...&quot;&gt;" name="link" toReformat="true" toShortenFQNames="true"
+			  value="&lt;link rel=&quot;stylesheet&quot; href=&quot;$END$&quot;/&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
@@ -190,9 +206,10 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;link rel=&quot;alternate&quot; type=&quot;application/atom+xml&quot; title=&quot;Atom&quot; href=&quot;atom.xml&quot;&gt;"
-			  name="link:atom" toReformat="true" toShortenFQNames="true"
-			  value="&lt;link rel=&quot;alternate&quot; type=&quot;application/atom+xml&quot; title=&quot;Atom&quot; href=&quot;$ATOM$&quot;/&gt;">
+	<template
+			description="&lt;link rel=&quot;alternate&quot; type=&quot;application/atom+xml&quot; title=&quot;Atom&quot; href=&quot;atom.xml&quot;&gt;"
+			name="link:atom" toReformat="true" toShortenFQNames="true"
+			value="&lt;link rel=&quot;alternate&quot; type=&quot;application/atom+xml&quot; title=&quot;Atom&quot; href=&quot;$ATOM$&quot;/&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;atom.xml&quot;" expression="" name="ATOM"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
@@ -217,9 +234,11 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0&quot;/&gt;"
-			  name="meta:vp" toReformat="true"
-			  toShortenFQNames="true" value="&lt;meta name=&quot;viewport&quot; content=&quot;width=$WIDTH$, user-scalable=$SCALABLE$, initial-scale=$INITIAL_SCALE$, maximum-scale=$MAX_SCALE$, minimum-scale=$MIN_SCALE$&quot;/&gt;">
+	<template
+			description="&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0&quot;/&gt;"
+			name="meta:vp" toReformat="true"
+			toShortenFQNames="true"
+			value="&lt;meta name=&quot;viewport&quot; content=&quot;width=$WIDTH$, user-scalable=$SCALABLE$, initial-scale=$INITIAL_SCALE$, maximum-scale=$MAX_SCALE$, minimum-scale=$MIN_SCALE$&quot;/&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;device-width&quot;" expression="" name="WIDTH"/>
 		<variable alwaysStopAt="true" defaultValue="&quot;no&quot;" expression="" name="SCALABLE"/>
 		<variable alwaysStopAt="true" defaultValue="&quot;1.0&quot;" expression="" name="INITIAL_SCALE"/>
@@ -236,17 +255,20 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;style&gt;...&lt;/style&gt;" name="style" toReformat="true" toShortenFQNames="true" value="&lt;style&gt;$END$&lt;/style&gt;">
+	<template description="&lt;style&gt;...&lt;/style&gt;" name="style" toReformat="true" toShortenFQNames="true"
+			  value="&lt;style&gt;$END$&lt;/style&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;script&gt;...&lt;/script&gt;" name="script" toReformat="true" toShortenFQNames="true" value="&lt;script&gt;$END$&lt;/script&gt;">
+	<template description="&lt;script&gt;...&lt;/script&gt;" name="script" toReformat="true" toShortenFQNames="true"
+			  value="&lt;script&gt;$END$&lt;/script&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;script src=&quot;...&quot;&gt;...&lt;/script&gt;" name="script:src" toReformat="true" toShortenFQNames="true" value="&lt;script src=&quot;$END$&quot;&gt;&lt;/script&gt;">
+	<template description="&lt;script src=&quot;...&quot;&gt;...&lt;/script&gt;" name="script:src" toReformat="true" toShortenFQNames="true"
+			  value="&lt;script src=&quot;$END$&quot;&gt;&lt;/script&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
@@ -374,13 +396,15 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;input type=&quot;...&quot;/&gt;" name="input" toReformat="true" toShortenFQNames="true" value="&lt;input type=&quot;$VAR0$&quot;/&gt;">
+	<template description="&lt;input type=&quot;...&quot;/&gt;" name="input" toReformat="true" toShortenFQNames="true"
+			  value="&lt;input type=&quot;$VAR0$&quot;/&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;text&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;input type=&quot;...&quot; name=&quot;...&quot; id=&quot;...&quot;/&gt;" name="inp" toReformat="true" toShortenFQNames="true"
+	<template description="&lt;input type=&quot;...&quot; name=&quot;...&quot; id=&quot;...&quot;/&gt;" name="inp" toReformat="true"
+			  toShortenFQNames="true"
 			  value="&lt;input type=&quot;$VAR0$&quot; name=&quot;$NAME$&quot; id=&quot;$ID$&quot;/&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;text&quot;" expression="" name="VAR0"/>
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="NAME"/>
@@ -389,13 +413,15 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;input name=&quot;...&quot; type=&quot;hidden&quot;/&gt;" name="input:hidden" toReformat="true" toShortenFQNames="true" value="&lt;input name=&quot;$VAR0$&quot; type=&quot;hidden&quot;/&gt;">
+	<template description="&lt;input name=&quot;...&quot; type=&quot;hidden&quot;/&gt;" name="input:hidden" toReformat="true" toShortenFQNames="true"
+			  value="&lt;input name=&quot;$VAR0$&quot; type=&quot;hidden&quot;/&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;input name=&quot;...&quot; type=&quot;hidden&quot;/&gt;" name="input:h" toReformat="true" toShortenFQNames="true" value="&lt;input name=&quot;$VAR0$&quot; type=&quot;hidden&quot;/&gt;">
+	<template description="&lt;input name=&quot;...&quot; type=&quot;hidden&quot;/&gt;" name="input:h" toReformat="true" toShortenFQNames="true"
+			  value="&lt;input name=&quot;$VAR0$&quot; type=&quot;hidden&quot;/&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
@@ -647,8 +673,10 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;select name=&quot;...&quot; id=&quot;...&quot; disabled=&quot;...&quot;&gt;...&lt;/select&gt;" name="select:disabled" toReformat="true"
-			  toShortenFQNames="true" value="&lt;select name=&quot;$VAR0$&quot; id=&quot;$VAR1$&quot; disabled=&quot;$VAR2$&quot;&gt;$END$&lt;/select&gt;">
+	<template description="&lt;select name=&quot;...&quot; id=&quot;...&quot; disabled=&quot;...&quot;&gt;...&lt;/select&gt;" name="select:disabled"
+			  toReformat="true"
+			  toShortenFQNames="true"
+			  value="&lt;select name=&quot;$VAR0$&quot; id=&quot;$VAR1$&quot; disabled=&quot;$VAR2$&quot;&gt;$END$&lt;/select&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR1"/>
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR2"/>
@@ -656,8 +684,10 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;select name=&quot;...&quot; id=&quot;...&quot; disabled=&quot;...&quot;&gt;...&lt;/select&gt;" name="select:d" toReformat="true"
-			  toShortenFQNames="true" value="&lt;select name=&quot;$VAR0$&quot; id=&quot;$VAR1$&quot; disabled=&quot;$VAR2$&quot;&gt;$END$&lt;/select&gt;">
+	<template description="&lt;select name=&quot;...&quot; id=&quot;...&quot; disabled=&quot;...&quot;&gt;...&lt;/select&gt;" name="select:d"
+			  toReformat="true"
+			  toShortenFQNames="true"
+			  value="&lt;select name=&quot;$VAR0$&quot; id=&quot;$VAR1$&quot; disabled=&quot;$VAR2$&quot;&gt;$END$&lt;/select&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR1"/>
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR2"/>
@@ -784,7 +814,8 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;fieldset disabled=&quot;&quot;&gt;...&lt;/fieldset&gt;" name="fieldset:disabled" toReformat="true" toShortenFQNames="true"
+	<template description="&lt;fieldset disabled=&quot;&quot;&gt;...&lt;/fieldset&gt;" name="fieldset:disabled" toReformat="true"
+			  toShortenFQNames="true"
 			  value="&lt;fieldset disabled=&quot;$VAR0$&quot;&gt;$END$&lt;/fieldset&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
@@ -1005,7 +1036,8 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;datalist&gt;...&lt;/datalist&gt;" name="datal" toReformat="true" toShortenFQNames="true" value="&lt;datalist&gt;$END$&lt;/datalist&gt;">
+	<template description="&lt;datalist&gt;...&lt;/datalist&gt;" name="datal" toReformat="true" toShortenFQNames="true"
+			  value="&lt;datalist&gt;$END$&lt;/datalist&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
@@ -1015,7 +1047,8 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="&lt;output&gt;...&lt;/output&gt;" name="out" toReformat="true" toShortenFQNames="true" value="&lt;output&gt;$END$&lt;/output&gt;">
+	<template description="&lt;output&gt;...&lt;/output&gt;" name="out" toReformat="true" toShortenFQNames="true"
+			  value="&lt;output&gt;$END$&lt;/output&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
@@ -1103,13 +1136,15 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="" name="dl+" toReformat="true" toShortenFQNames="true" value="&lt;dl&gt;&#10;&lt;dt&gt;$VAR0$&lt;/dt&gt;&#10;&lt;dd&gt;$END$&lt;/dd&gt;&#10;&lt;/dl&gt;">
+	<template description="" name="dl+" toReformat="true" toShortenFQNames="true"
+			  value="&lt;dl&gt;&#10;&lt;dt&gt;$VAR0$&lt;/dt&gt;&#10;&lt;dd&gt;$END$&lt;/dd&gt;&#10;&lt;/dl&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="" name="map+" toReformat="true" toShortenFQNames="true" value="&lt;map name=&quot;$VAR0$&quot;&gt;&#10;&lt;area shape=&quot;$VAR1$&quot; coords=&quot;$VAR2$&quot; href=&quot;$VAR3$&quot; alt=&quot;$VAR4$&quot;/&gt;$END$&#10;&lt;/map&gt;">
+	<template description="" name="map+" toReformat="true" toShortenFQNames="true"
+			  value="&lt;map name=&quot;$VAR0$&quot;&gt;&#10;&lt;area shape=&quot;$VAR1$&quot; coords=&quot;$VAR2$&quot; href=&quot;$VAR3$&quot; alt=&quot;$VAR4$&quot;/&gt;$END$&#10;&lt;/map&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR1"/>
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR2"/>
@@ -1119,12 +1154,14 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="" name="table+" toReformat="true" toShortenFQNames="true" value="&lt;table&gt;&#10;&lt;tr&gt;&#10;&lt;td&gt;$END$&lt;/td&gt;&#10;&lt;/tr&gt;&#10;&lt;/table&gt;">
+	<template description="" name="table+" toReformat="true" toShortenFQNames="true"
+			  value="&lt;table&gt;&#10;&lt;tr&gt;&#10;&lt;td&gt;$END$&lt;/td&gt;&#10;&lt;/tr&gt;&#10;&lt;/table&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="" name="colgroup+" toReformat="true" toShortenFQNames="true" value="&lt;colgroup&gt;&#10;&lt;col/&gt;&#10;&lt;/colgroup&gt;">
+	<template description="" name="colgroup+" toReformat="true" toShortenFQNames="true"
+			  value="&lt;colgroup&gt;&#10;&lt;col/&gt;&#10;&lt;/colgroup&gt;">
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
@@ -1139,7 +1176,8 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="" name="select+" toReformat="true" toShortenFQNames="true" value="&lt;select name=&quot;$VAR0$&quot; id=&quot;$VAR1$&quot;&gt;&#10;&lt;option value=&quot;$VAR2$&quot;&gt;$END$&lt;/option&gt;&#10;&lt;/select&gt;">
+	<template description="" name="select+" toReformat="true" toShortenFQNames="true"
+			  value="&lt;select name=&quot;$VAR0$&quot; id=&quot;$VAR1$&quot;&gt;&#10;&lt;option value=&quot;$VAR2$&quot;&gt;$END$&lt;/option&gt;&#10;&lt;/select&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR1"/>
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR2"/>
@@ -1147,13 +1185,15 @@
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="" name="optgroup+" toReformat="true" toShortenFQNames="true" value="&lt;optgroup&gt;&#10;&lt;option value=&quot;$VAR0$&quot;&gt;$END$&lt;/option&gt;&#10;&lt;/optgroup&gt;">
+	<template description="" name="optgroup+" toReformat="true" toShortenFQNames="true"
+			  value="&lt;optgroup&gt;&#10;&lt;option value=&quot;$VAR0$&quot;&gt;$END$&lt;/option&gt;&#10;&lt;/optgroup&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>
 		</context>
 	</template>
-	<template description="" name="optg+" toReformat="true" toShortenFQNames="true" value="&lt;optgroup&gt;&#10;&lt;option value=&quot;$VAR0$&quot;&gt;$END$&lt;/option&gt;&#10;&lt;/optgroup&gt;">
+	<template description="" name="optg+" toReformat="true" toShortenFQNames="true"
+			  value="&lt;optgroup&gt;&#10;&lt;option value=&quot;$VAR0$&quot;&gt;$END$&lt;/option&gt;&#10;&lt;/optgroup&gt;">
 		<variable alwaysStopAt="true" defaultValue="&quot;&quot;" expression="" name="VAR0"/>
 		<context>
 			<option name="HTML_TEXT" value="true"/>

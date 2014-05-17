@@ -41,6 +41,7 @@ import com.google.common.collect.ImmutableSet;
 import com.intellij.application.options.emmet.XmlEmmetOptions;
 import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
 import com.intellij.lang.xml.XMLLanguage;
+import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
@@ -128,8 +129,8 @@ public class BemEmmetFilter extends ZenCodingFilter
 	@Override
 	public GenerationNode filterNode(@NotNull final GenerationNode node)
 	{
-		final List<Pair<String, String>> attribute2Value = node.getTemplateToken().getAttribute2Value();
-		Pair<String, String> classNamePair = getClassPair(attribute2Value);
+		final List<Couple<String>> attribute2Value = node.getTemplateToken().getAttribute2Value();
+		Couple<String> classNamePair = getClassPair(attribute2Value);
 		if(classNamePair != null)
 		{
 			Iterable<String> classNames = extractClasses(classNamePair.second);
@@ -142,7 +143,7 @@ public class BemEmmetFilter extends ZenCodingFilter
 					return processClassName(className, node);
 				}
 			})));
-			attribute2Value.add(Pair.create("class", CLASS_NAME_JOINER.join(newClassNames)));
+			attribute2Value.add(Couple.newOne("class", CLASS_NAME_JOINER.join(newClassNames)));
 		}
 		return node;
 	}
@@ -326,11 +327,11 @@ public class BemEmmetFilter extends ZenCodingFilter
 	 * @return pointer to pair
 	 */
 	@Nullable
-	private static Pair<String, String> getClassPair(@NotNull List<Pair<String, String>> attribute2Value)
+	private static Couple<String> getClassPair(@NotNull List<Couple<String>> attribute2Value)
 	{
 		for(int i = 0; i < attribute2Value.size(); i++)
 		{
-			Pair<String, String> pair = attribute2Value.get(i);
+			Couple<String> pair = attribute2Value.get(i);
 			if("class".equals(pair.first) && !isNullOrEmpty(pair.second))
 			{
 				return attribute2Value.remove(i);

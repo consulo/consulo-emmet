@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2010 JetBrains s.r.o.
+ * Copyright 2000-2013 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,13 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.google.common.base.Joiner;
 import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.emmet.ZenCodingUtil;
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.text.StringUtil;
 
 /**
@@ -33,6 +34,7 @@ import com.intellij.openapi.util.text.StringUtil;
  */
 public class TemplateNode extends ZenCodingNode
 {
+	private static final Joiner JOINER = Joiner.on(",");
 	private final TemplateToken myTemplateToken;
 	@Nullable
 	private final ZenCodingGenerator myGenerator;
@@ -55,8 +57,13 @@ public class TemplateNode extends ZenCodingNode
 
 	@NotNull
 	@Override
-	public List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback,
-			boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
+	public List<GenerationNode> expand(
+			int numberInIteration,
+			int totalIterations,
+			String surroundedText,
+			CustomTemplateCallback callback,
+			boolean insertSurroundedTextAtTheEnd,
+			GenerationNode parent)
 	{
 		TemplateToken templateToken = myTemplateToken;
 		String templateKey = templateToken.getKey();
@@ -68,12 +75,14 @@ public class TemplateNode extends ZenCodingNode
 			TemplateImpl template = myGenerator.createTemplateByKey(newTemplateKey);
 			if(template != null)
 			{
+				template.setDeactivated(true);
 				newTemplateToken.setTemplate(template, callback);
 				templateToken = newTemplateToken;
 			}
 		}
 
-		GenerationNode node = new GenerationNode(templateToken, numberInIteration, totalIterations, surroundedText, insertSurroundedTextAtTheEnd, parent);
+		GenerationNode node = new GenerationNode(templateToken, numberInIteration, totalIterations, surroundedText, insertSurroundedTextAtTheEnd,
+				parent);
 		return Arrays.asList(node);
 	}
 
@@ -81,10 +90,10 @@ public class TemplateNode extends ZenCodingNode
 	public String toString()
 	{
 		String result = myTemplateToken.getKey();
-		List<Pair<String, String>> attributes = myTemplateToken.getAttribute2Value();
+		List<Couple<String>> attributes = myTemplateToken.getAttribute2Value();
 		if(!attributes.isEmpty())
 		{
-			result += "[" + StringUtil.join(myTemplateToken.getAttribute2Value(), ",") + "]";
+			result += "[" + JOINER.join(myTemplateToken.getAttribute2Value()) + "]";
 		}
 		return "Template(" + result + ")";
 	}
