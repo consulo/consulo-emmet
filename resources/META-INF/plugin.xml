@@ -24,28 +24,31 @@
 		<extensionPoint name="codingGenerator" interface="com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator"/>
 		<extensionPoint name="codingFilter" interface="com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter"/>
 
-		<extensionPoint name="optionsProvider" beanClass="com.intellij.application.options.emmet.EmmetOptionsProviderEP">
-			<with attribute="instance" implements="com.intellij.application.options.emmet.EmmetOptionsProvider"/>
-		</extensionPoint>
-
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="org.consulo.emmet">
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.XslZenCodingFilter" />
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.CommentZenCodingFilter" />
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.EscapeZenCodingFilter" />
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.SingleLineEmmetFilter" />
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.BemEmmetFilter" />
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.TrimZenCodingFilter" />
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.XslZenCodingFilter"/>
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.CommentZenCodingFilter"/>
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.EscapeZenCodingFilter"/>
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.SingleLineEmmetFilter"/>
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.BemEmmetFilter"/>
+		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.TrimZenCodingFilter"/>
 
-		<optionsProvider id="xml.emmet.application.settings"
-						 displayName="XML(HTML, etc)"
-						 instance="com.intellij.application.options.emmet.XmlEmmetConfigurable"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">
-		<editorOptionsProvider id="emmet.application.settings" order="last"
-								instance="com.intellij.application.options.emmet.EmmetConfigurable"/>
+		<applicationConfigurable
+				id="editor.emmet"
+				parentId="editor"
+				key="emmet.configuration.title"
+				bundle="messages.EmmetBundle"
+				instance="com.intellij.application.options.emmet.EmmetConfigurable"/>
+
+		<applicationConfigurable
+				id="editor.emmet.xml"
+				parentId="editor.emmet"
+				displayName="XML/HTML"
+				instance="com.intellij.application.options.emmet.XmlEmmetConfigurable"/>
 
 		<applicationService serviceInterface="com.intellij.application.options.emmet.EmmetOptions"
 							serviceImplementation="com.intellij.application.options.emmet.EmmetOptions"/>

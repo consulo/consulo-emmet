@@ -15,31 +15,23 @@
  */
 package com.intellij.application.options.emmet;
 
-import java.util.List;
-
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.application.options.editor.EditorOptionsProvider;
 import com.intellij.codeInsight.CodeInsightBundle;
-import com.intellij.codeInsight.template.emmet.EmmetBundle;
 import com.intellij.codeInsight.template.impl.TemplateSettings;
-import com.intellij.openapi.Disposable;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.options.SearchableConfigurable;
-import com.intellij.openapi.options.ex.ConfigurableWrapper;
 import com.intellij.ui.components.JBCheckBox;
 
 /**
  * User: zolotov
  * Date: 2/20/13
  */
-public class EmmetConfigurable extends SearchableConfigurable.Parent.Abstract implements EditorOptionsProvider, Disposable
+public class EmmetConfigurable implements Configurable
 {
 	private JBCheckBox myEnableEmmetJBCheckBox;
 	private JComboBox myEmmetExpandShortcutCombo;
@@ -71,43 +63,18 @@ public class EmmetConfigurable extends SearchableConfigurable.Parent.Abstract im
 		return TemplateSettings.SPACE_CHAR;
 	}
 
-	@Override
-	public void dispose()
-	{
-	}
-
-	@NotNull
-	@Override
-	public String getId()
-	{
-		return "emmet.application.settings";
-	}
-
-	@Override
-	protected Configurable[] buildConfigurables()
-	{
-		List<EmmetOptionsProvider> configurables = ConfigurableWrapper.createConfigurables(EmmetOptionsProviderEP.EP_NAME);
-		return configurables.toArray(new Configurable[configurables.size()]);
-	}
-
-	@Override
-	public boolean hasOwnContent()
-	{
-		return true;
-	}
-
 	@Nls
 	@Override
 	public String getDisplayName()
 	{
-		return EmmetBundle.message("emmet.configuration.title");
+		return null;
 	}
 
 	@Nullable
 	@Override
 	public String getHelpTopic()
 	{
-		return getId();
+		return null;
 	}
 
 	@Nullable
@@ -154,5 +121,11 @@ public class EmmetConfigurable extends SearchableConfigurable.Parent.Abstract im
 		{
 			myEmmetExpandShortcutCombo.setSelectedItem(SPACE);
 		}
+	}
+
+	@Override
+	public void disposeUIResources()
+	{
+
 	}
 }

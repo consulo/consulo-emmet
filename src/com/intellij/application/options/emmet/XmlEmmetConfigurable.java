@@ -16,92 +16,27 @@
 
 package com.intellij.application.options.emmet;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.template.emmet.EmmetBundle;
-import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.options.BeanConfigurable;
+import com.intellij.openapi.options.Configurable;
 
 /**
  * @author VISTALL
  * @since 23.08.13.
  */
-public class XmlEmmetConfigurable implements EmmetOptionsProvider
+public class XmlEmmetConfigurable extends BeanConfigurable<XmlEmmetOptions> implements Configurable
 {
-	private JPanel myRoot;
-	private JCheckBox myEnableBemFilter;
-
 	public XmlEmmetConfigurable()
 	{
-		myRoot = new JPanel(new BorderLayout());
-
-		myEnableBemFilter = new JCheckBox();
-		myEnableBemFilter.setText(EmmetBundle.message("emmet.enable.bem.filter"));
-
-		myRoot.add(myEnableBemFilter, BorderLayout.NORTH);
+		super(XmlEmmetOptions.getInstance());
+		checkBox("bemFilterEnabledByDefault", EmmetBundle.message("emmet.enable.bem.filter"));
 	}
 
-	@Nullable
-	@Override
-	public JComponent createComponent()
-	{
-		return myRoot;
-	}
-
-	@Override
-	public boolean isModified()
-	{
-		XmlEmmetOptions instance = XmlEmmetOptions.getInstance();
-		return myEnableBemFilter.isSelected() != instance.isBemFilterEnabledByDefault();
-	}
-
-	@Override
-	public void apply() throws ConfigurationException
-	{
-		XmlEmmetOptions instance = XmlEmmetOptions.getInstance();
-
-		instance.setBemFilterEnabledByDefault(myEnableBemFilter.isSelected());
-	}
-
-	@Override
-	public void reset()
-	{
-		XmlEmmetOptions instance = XmlEmmetOptions.getInstance();
-
-		myEnableBemFilter.setSelected(instance.isBemFilterEnabledByDefault());
-	}
-
-	@Override
-	public void disposeUIResources()
-	{
-
-	}
-
-	@NotNull
-	@Override
-	public String getId()
-	{
-		return "xml.emmet.application.settings";
-	}
-
-	@Nullable
-	@Override
-	public Runnable enableSearch(String s)
-	{
-		return null;
-	}
-
-	@Nls
 	@Override
 	public String getDisplayName()
 	{
-		return "XML(HTML, etc)";
+		return null;
 	}
 
 	@Nullable
