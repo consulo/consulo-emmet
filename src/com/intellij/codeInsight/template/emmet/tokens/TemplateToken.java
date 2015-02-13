@@ -23,8 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
+import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.openapi.command.undo.UndoConstants;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFileFactory;
@@ -115,7 +115,7 @@ public class TemplateToken extends ZenCodingToken
 		final PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(callback.getProject());
 		if(!containsAttrsVar(template))
 		{
-			XmlFile dummyFile = (XmlFile) psiFileFactory.createFileFromText("dummy.xml", StdFileTypes.XML, templateString);
+			XmlFile dummyFile = (XmlFile) psiFileFactory.createFileFromText("dummy.xml", XmlFileType.INSTANCE, templateString);
 			dummyRootTag = dummyFile.getRootTag();
 			if(dummyRootTag != null)
 			{
@@ -124,7 +124,7 @@ public class TemplateToken extends ZenCodingToken
 		}
 
 		templateString = dummyRootTag != null ? dummyRootTag.getContainingFile().getText() : templateString;
-		XmlFile xmlFile = (XmlFile) psiFileFactory.createFileFromText("dummy.xml", StdFileTypes.XML, templateString, LocalTimeCounter.currentTime(),
+		XmlFile xmlFile = (XmlFile) psiFileFactory.createFileFromText("dummy.xml", XmlFileType.INSTANCE, templateString, LocalTimeCounter.currentTime(),
 				true);
 		VirtualFile vFile = xmlFile.getVirtualFile();
 		if(vFile != null)

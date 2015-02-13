@@ -38,12 +38,12 @@ import com.intellij.codeInsight.template.emmet.generators.XmlZenCodingGeneratorI
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
+import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.injected.editor.DocumentWindowImpl;
 import com.intellij.lang.xml.XMLLanguage;
 import com.intellij.openapi.command.undo.UndoConstants;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.UserDataHolderBase;
@@ -327,7 +327,7 @@ public class GenerationNode extends UserDataHolderBase
 
 		final XmlFile xmlFile = token.getFile();
 		PsiFileFactory fileFactory = PsiFileFactory.getInstance(xmlFile.getProject());
-		XmlFile dummyFile = (XmlFile) fileFactory.createFileFromText("dummy.xml", StdFileTypes.XML, xmlFile.getText());
+		XmlFile dummyFile = (XmlFile) fileFactory.createFileFromText("dummy.xml", XmlFileType.INSTANCE, xmlFile.getText());
 		final XmlTag tag = dummyFile.getRootTag();
 		if(tag != null)
 		{
@@ -340,7 +340,7 @@ public class GenerationNode extends UserDataHolderBase
 			}
 			XmlTag tag1 = hasChildren ? expandEmptyTagIfNecessary(tag) : tag;
 			setAttributeValues(tag1, attr2value);
-			XmlFile physicalFile = (XmlFile) fileFactory.createFileFromText("dummy.xml", StdFileTypes.XML, tag1.getContainingFile().getText(),
+			XmlFile physicalFile = (XmlFile) fileFactory.createFileFromText("dummy.xml", XmlFileType.INSTANCE, tag1.getContainingFile().getText(),
 					LocalTimeCounter.currentTime(), true);
 			VirtualFile vFile = physicalFile.getVirtualFile();
 			if(vFile != null)
@@ -404,7 +404,7 @@ public class GenerationNode extends UserDataHolderBase
 
 	private static int gotoChild(Project project, CharSequence text, int offset, int start, int end)
 	{
-		PsiFile file = PsiFileFactory.getInstance(project).createFileFromText("dummy.xml", StdFileTypes.XML, text, LocalTimeCounter.currentTime(),
+		PsiFile file = PsiFileFactory.getInstance(project).createFileFromText("dummy.xml", XmlFileType.INSTANCE, text, LocalTimeCounter.currentTime(),
 				false);
 
 		PsiElement element = file.findElementAt(offset);
