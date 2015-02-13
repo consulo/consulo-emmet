@@ -143,7 +143,7 @@ public class BemEmmetFilter extends ZenCodingFilter
 					return processClassName(className, node);
 				}
 			})));
-			attribute2Value.add(Couple.newOne("class", CLASS_NAME_JOINER.join(newClassNames)));
+			attribute2Value.add(Couple.of("class", CLASS_NAME_JOINER.join(newClassNames)));
 		}
 		return node;
 	}
