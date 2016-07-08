@@ -16,13 +16,13 @@
 
 package com.intellij.application.options.emmet;
 
-import org.consulo.lombok.annotations.ApplicationService;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import consulo.lombok.annotations.ApplicationService;
 
 /**
  * @author VISTALL

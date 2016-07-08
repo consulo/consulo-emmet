@@ -16,7 +16,7 @@
 
 package com.intellij.codeInsight.template.emmet;
 
-import org.consulo.lombok.annotations.Bundle;
+import consulo.lombok.annotations.Bundle;
 
 /**
  * @author VISTALL
