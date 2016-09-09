@@ -26,7 +26,7 @@ import com.intellij.psi.PsiElement;
  */
 public abstract class ZenCodingFilter
 {
-	public static final ExtensionPointName<ZenCodingFilter> EP_NAME = new ExtensionPointName<ZenCodingFilter>("org.consulo.emmet.codingFilter");
+	public static final ExtensionPointName<ZenCodingFilter> EP_NAME = new ExtensionPointName<ZenCodingFilter>("consulo.emmet.codingFilter");
 
 	@NotNull
 	public static ZenCodingFilter[] getInstances()

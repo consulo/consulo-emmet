@@ -14,8 +14,8 @@
   ~ limitations under the License.
   -->
 
-<idea-plugin version="2">
-	<id>org.consulo.emmet</id>
+<idea-plugin>
+	<id>consulo.emmet</id>
 	<name>Emmet</name>
 	<version>SNAPSHOT</version>
 	<depends>com.intellij.xml</depends>
@@ -26,7 +26,7 @@
 
 	</extensionPoints>
 
-	<extensions defaultExtensionNs="org.consulo.emmet">
+	<extensions defaultExtensionNs="consulo.emmet">
 		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.XslZenCodingFilter"/>
 		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.CommentZenCodingFilter"/>
 		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.EscapeZenCodingFilter"/>

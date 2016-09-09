@@ -44,8 +44,7 @@ import com.intellij.psi.xml.XmlTokenType;
  */
 public abstract class ZenCodingGenerator
 {
-	private static final ExtensionPointName<ZenCodingGenerator> EP_NAME = new ExtensionPointName<ZenCodingGenerator>("org.consulo.emmet" +
-			".codingGenerator");
+	private static final ExtensionPointName<ZenCodingGenerator> EP_NAME = new ExtensionPointName<ZenCodingGenerator>("consulo.emmet.codingGenerator");
 	private static final TokenSet VALID_LEAF_TYPES = TokenSet.create(XmlTokenType.XML_DATA_CHARACTERS, XmlTokenType.XML_CHAR_ENTITY_REF);
 
 	public abstract TemplateImpl generateTemplate(@NotNull TemplateToken token, boolean hasChildren, @NotNull PsiElement context);
