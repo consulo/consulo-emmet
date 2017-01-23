@@ -16,19 +16,19 @@
 
 package com.intellij.application.options.emmet;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.util.xmlb.XmlSerializerUtil;
-import consulo.lombok.annotations.ApplicationService;
 
 /**
  * @author VISTALL
  * @since 23.08.13.
  */
-@ApplicationService
 @State(
 		name = "XmlEmmetOptions",
 		storages = {
@@ -39,6 +39,12 @@ import consulo.lombok.annotations.ApplicationService;
 )
 public class XmlEmmetOptions implements PersistentStateComponent<XmlEmmetOptions>
 {
+	@NotNull
+	public static XmlEmmetOptions getInstance()
+	{
+		return ServiceManager.getService(XmlEmmetOptions.class);
+	}
+
 	private boolean myBemFilterEnabledByDefault = false;
 
 	public boolean isBemFilterEnabledByDefault()

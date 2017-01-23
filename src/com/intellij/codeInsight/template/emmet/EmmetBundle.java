@@ -16,13 +16,29 @@
 
 package com.intellij.codeInsight.template.emmet;
 
-import consulo.lombok.annotations.Bundle;
+import org.jetbrains.annotations.PropertyKey;
+import com.intellij.AbstractBundle;
 
 /**
  * @author VISTALL
  * @since 21.02.14
  */
-@Bundle("messages.EmmetBundle")
-public class EmmetBundle
+public class EmmetBundle extends AbstractBundle
 {
+	private static final EmmetBundle ourInstance = new EmmetBundle();
+
+	private EmmetBundle()
+	{
+		super("messages.EmmetBundle");
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.EmmetBundle") String key)
+	{
+		return ourInstance.getMessage(key);
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.EmmetBundle") String key, Object... params)
+	{
+		return ourInstance.getMessage(key, params);
+	}
 }
