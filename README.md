@@ -1,1 +1,1 @@
-![Build Status](http://must-be.org/vulcan/statusImage?name=consulo-emmet)
+[![Build Status](https://ci.consulo.io/job/consulo-emmet/badge/icon)](https://ci.consulo.io/job/consulo-emmet/)
