@@ -15,18 +15,6 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import static com.google.common.collect.Lists.newArrayList;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.google.common.base.Strings;
 import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.LiveTemplateBuilder;
@@ -39,7 +27,7 @@ import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.ide.highlighter.XmlFileType;
-import com.intellij.injected.editor.DocumentWindowImpl;
+import com.intellij.injected.editor.DocumentWindow;
 import com.intellij.lang.xml.XMLLanguage;
 import com.intellij.openapi.command.undo.UndoConstants;
 import com.intellij.openapi.editor.Document;
@@ -56,15 +44,17 @@ import com.intellij.psi.XmlElementFactory;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.xml.XmlDocument;
-import com.intellij.psi.xml.XmlFile;
-import com.intellij.psi.xml.XmlTag;
-import com.intellij.psi.xml.XmlToken;
-import com.intellij.psi.xml.XmlTokenType;
+import com.intellij.psi.xml.*;
 import com.intellij.util.LocalTimeCounter;
 import com.intellij.util.containers.HashMap;
 import com.intellij.util.containers.HashSet;
 import com.intellij.xml.util.HtmlUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @author Eugene.Kudelevsky
@@ -197,7 +187,7 @@ public class GenerationNode extends UserDataHolderBase
 		{
 			Editor editor = callback.getEditor();
 			Document document = editor.getDocument();
-			if(document instanceof DocumentWindowImpl && ((DocumentWindowImpl) document).isOneLine())
+			if(document instanceof DocumentWindow && ((DocumentWindow) document).isOneLine())
 			{
 		/*
          * If document is one-line that in the moment of inserting text,

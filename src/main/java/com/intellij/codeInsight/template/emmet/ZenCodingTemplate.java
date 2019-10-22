@@ -15,65 +15,30 @@
  */
 package com.intellij.codeInsight.template.emmet;
 
-import java.awt.AWTEvent;
-import java.awt.Dimension;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.event.DocumentEvent;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.application.options.emmet.EmmetOptions;
 import com.intellij.codeInsight.CodeInsightBundle;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.template.CustomLiveTemplateBase;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import com.intellij.codeInsight.template.LiveTemplateBuilder;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.TemplateEditingAdapter;
-import com.intellij.codeInsight.template.TemplateEditingListener;
+import com.intellij.codeInsight.template.*;
 import com.intellij.codeInsight.template.emmet.filters.SingleLineEmmetFilter;
 import com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter;
 import com.intellij.codeInsight.template.emmet.generators.XmlZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
-import com.intellij.codeInsight.template.emmet.nodes.FilterNode;
-import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
-import com.intellij.codeInsight.template.emmet.nodes.TemplateNode;
-import com.intellij.codeInsight.template.emmet.nodes.TextNode;
-import com.intellij.codeInsight.template.emmet.nodes.ZenCodingNode;
+import com.intellij.codeInsight.template.emmet.nodes.*;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.emmet.tokens.TextToken;
 import com.intellij.codeInsight.template.emmet.tokens.ZenCodingToken;
-import com.intellij.codeInsight.template.impl.CustomLiveTemplateLookupElement;
-import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.codeInsight.template.impl.TemplateManagerImpl;
-import com.intellij.codeInsight.template.impl.TemplateSettings;
-import com.intellij.codeInsight.template.impl.TemplateState;
+import com.intellij.codeInsight.template.impl.*;
 import com.intellij.diagnostic.AttachmentFactory;
-import com.intellij.ide.IdeEventQueue;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Caret;
-import com.intellij.openapi.editor.CaretAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorModificationUtil;
-import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.editor.*;
 import com.intellij.openapi.ui.popup.Balloon;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.JBPopupListener;
 import com.intellij.openapi.ui.popup.LightweightWindowEvent;
-import com.intellij.openapi.ui.popup.util.PopupUtil;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Ref;
@@ -84,12 +49,17 @@ import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.ui.BalloonImpl;
-import com.intellij.ui.DocumentAdapter;
-import com.intellij.ui.LightColors;
-import com.intellij.ui.TextFieldWithHistory;
-import com.intellij.ui.TextFieldWithStoredHistory;
+import com.intellij.ui.*;
 import com.intellij.util.containers.ContainerUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.event.DocumentEvent;
+import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.List;
+import java.util.*;
 
 
 /**
@@ -392,9 +362,13 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 		field.setPreferredSize(new Dimension(Math.max(220, fieldPreferredSize.width), fieldPreferredSize.height));
 		field.setHistorySize(10);
 		final JBPopupFactory popupFactory = JBPopupFactory.getInstance();
-		final BalloonImpl balloon = (BalloonImpl) popupFactory.createDialogBalloonBuilder(field,
-				EmmetBundle.message("emmet.title")).setCloseButtonEnabled(false).setBlockClicksThroughBalloon(true).setAnimationCycle(0)
-				.setHideOnKeyOutside(true).createBalloon();
+		final BalloonImpl balloon = (BalloonImpl) popupFactory.createDialogBalloonBuilder(field,EmmetBundle.message("emmet.title"))
+				.setCloseButtonEnabled(false)
+				.setBlockClicksThroughBalloon(true)
+				.setHideOnClickOutside(true)
+				.setAnimationCycle(0)
+				.setHideOnKeyOutside(true)
+				.createBalloon();
 
 		field.addDocumentListener(new DocumentAdapter()
 		{
@@ -430,25 +404,6 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 				}
 			}
 		});
-
-		IdeEventQueue.getInstance().addDispatcher(new IdeEventQueue.EventDispatcher()
-		{
-			@Override
-			public boolean dispatch(AWTEvent e)
-			{
-				if(e instanceof MouseEvent)
-				{
-					if(e.getID() == MouseEvent.MOUSE_PRESSED)
-					{
-						if(!balloon.isInsideBalloon((MouseEvent) e) && !PopupUtil.isComboPopupKeyEvent((ComponentEvent) e, field))
-						{
-							balloon.hide();
-						}
-					}
-				}
-				return false;
-			}
-		}, balloon);
 
 		balloon.addListener(new JBPopupListener.Adapter()
 		{
