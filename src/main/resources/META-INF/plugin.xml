@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<idea-plugin>
+<consulo-plugin>
 	<id>consulo.emmet</id>
 	<name>Emmet</name>
 	<version>SNAPSHOT</version>
@@ -59,4 +59,4 @@
 
 		<customLiveTemplate implementation="com.intellij.codeInsight.template.emmet.ZenCodingTemplate"/>
 	</extensions>
-</idea-plugin>
+</consulo-plugin>

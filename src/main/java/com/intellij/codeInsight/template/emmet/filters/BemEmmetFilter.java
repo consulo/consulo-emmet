@@ -15,24 +15,6 @@
  */
 package com.intellij.codeInsight.template.emmet.filters;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
-import static com.google.common.collect.Iterables.concat;
-import static com.google.common.collect.Iterables.find;
-import static com.google.common.collect.Iterables.getFirst;
-import static com.google.common.collect.Iterables.getLast;
-import static com.google.common.collect.Iterables.transform;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Lists.newLinkedList;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -42,9 +24,23 @@ import com.intellij.application.options.emmet.XmlEmmetOptions;
 import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
 import com.intellij.lang.xml.XMLLanguage;
 import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import consulo.util.dataholder.Key;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.collect.Iterables.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.newLinkedList;
 
 /**
  * User: zolotov
