@@ -45,8 +45,6 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.*;
 import com.intellij.util.LocalTimeCounter;
-import com.intellij.util.containers.HashMap;
-import com.intellij.util.containers.HashSet;
 import com.intellij.xml.util.HtmlUtil;
 import consulo.util.dataholder.UserDataHolderBase;
 import org.jetbrains.annotations.NotNull;
