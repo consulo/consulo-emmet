@@ -15,12 +15,6 @@
  */
 package com.intellij.codeInsight.template.emmet.generators;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.emmet.EmmetParser;
 import com.intellij.codeInsight.template.emmet.XmlEmmetParser;
@@ -30,13 +24,18 @@ import com.intellij.codeInsight.template.emmet.tokens.ZenCodingToken;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.openapi.options.UnnamedConfigurable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.xml.XmlTokenType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -203,8 +202,8 @@ public abstract class ZenCodingGenerator
 		return new XmlEmmetParser(tokens, callback, generator, surroundWithTemplate);
 	}
 
-	@Nullable
-	public UnnamedConfigurable createConfigurable()
+	@javax.annotation.Nullable
+	public String getConfigurableId()
 	{
 		return null;
 	}

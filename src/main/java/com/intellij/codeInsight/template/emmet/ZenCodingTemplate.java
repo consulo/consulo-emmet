@@ -51,6 +51,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.ui.*;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.emmet.localize.EmmetLocalize;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -362,7 +363,7 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 		field.setPreferredSize(new Dimension(Math.max(220, fieldPreferredSize.width), fieldPreferredSize.height));
 		field.setHistorySize(10);
 		final JBPopupFactory popupFactory = JBPopupFactory.getInstance();
-		final BalloonImpl balloon = (BalloonImpl) popupFactory.createDialogBalloonBuilder(field,EmmetBundle.message("emmet.title"))
+		final BalloonImpl balloon = (BalloonImpl) popupFactory.createDialogBalloonBuilder(field, EmmetLocalize.emmetTitle().getValue())
 				.setCloseButtonEnabled(false)
 				.setBlockClicksThroughBalloon(true)
 				.setHideOnClickOutside(true)
@@ -518,7 +519,7 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 	@NotNull
 	public String getTitle()
 	{
-		return EmmetBundle.message("emmet.title");
+		return EmmetLocalize.emmetTitle().getValue();
 	}
 
 	@Override

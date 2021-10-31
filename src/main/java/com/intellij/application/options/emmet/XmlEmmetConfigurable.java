@@ -16,33 +16,44 @@
 
 package com.intellij.application.options.emmet;
 
-import org.jetbrains.annotations.Nullable;
-import com.intellij.codeInsight.template.emmet.EmmetBundle;
-import com.intellij.openapi.options.BeanConfigurable;
 import com.intellij.openapi.options.Configurable;
+import consulo.disposer.Disposable;
+import consulo.emmet.localize.EmmetLocalize;
+import consulo.options.SimpleConfigurableByProperties;
+import consulo.ui.CheckBox;
+import consulo.ui.Component;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.layout.VerticalLayout;
+import jakarta.inject.Provider;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL
  * @since 23.08.13.
  */
-public class XmlEmmetConfigurable extends BeanConfigurable<XmlEmmetOptions> implements Configurable
+public class XmlEmmetConfigurable extends SimpleConfigurableByProperties implements Configurable
 {
-	public XmlEmmetConfigurable()
+	private final Provider<XmlEmmetOptions> myXmlEmmetOptionsProvider;
+
+	public XmlEmmetConfigurable(Provider<XmlEmmetOptions> xmlEmmetOptionsProvider)
 	{
-		super(XmlEmmetOptions.getInstance());
-		checkBox("bemFilterEnabledByDefault", EmmetBundle.message("emmet.enable.bem.filter"));
+		myXmlEmmetOptionsProvider = xmlEmmetOptionsProvider;
 	}
 
+	@RequiredUIAccess
+	@Nonnull
 	@Override
-	public String getDisplayName()
+	protected Component createLayout(@Nonnull PropertyBuilder propertyBuilder, @Nonnull Disposable disposable)
 	{
-		return null;
-	}
+		XmlEmmetOptions xmlEmmetOptions = myXmlEmmetOptionsProvider.get();
 
-	@Nullable
-	@Override
-	public String getHelpTopic()
-	{
-		return null;
+		VerticalLayout rootLayout = VerticalLayout.create();
+
+		CheckBox enableBemFilter = CheckBox.create(EmmetLocalize.emmetEnableBemFilter());
+		rootLayout.add(enableBemFilter);
+		propertyBuilder.add(enableBemFilter, xmlEmmetOptions::isBemFilterEnabledByDefault, xmlEmmetOptions::setBemFilterEnabledByDefault);
+
+		return rootLayout;
 	}
 }

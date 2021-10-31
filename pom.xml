@@ -59,9 +59,17 @@
 				</configuration>
 				<executions>
 					<execution>
+						<id>package</id>
 						<phase>package</phase>
 						<goals>
 							<goal>workspace</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>gen</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate-localize</goal>
 						</goals>
 					</execution>
 				</executions>

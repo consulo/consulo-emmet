@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2013-2014 must-be.org
+  ~ Copyright 2013-2021 consulo.io
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@
 	<name>Emmet</name>
 	<version>SNAPSHOT</version>
 	<depends>com.intellij.xml</depends>
+	<localize>consulo.emmet.EmmetLocalize</localize>
 
 	<extensionPoints>
 		<extensionPoint name="codingGenerator" interface="com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator"/>
 		<extensionPoint name="codingFilter" interface="com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter"/>
-
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="consulo.emmet">
@@ -33,7 +33,6 @@
 		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.SingleLineEmmetFilter"/>
 		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.BemEmmetFilter"/>
 		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.TrimZenCodingFilter"/>
-
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">

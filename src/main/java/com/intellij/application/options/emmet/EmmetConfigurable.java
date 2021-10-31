@@ -15,117 +15,112 @@
  */
 package com.intellij.application.options.emmet;
 
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.CodeInsightBundle;
 import com.intellij.codeInsight.template.impl.TemplateSettings;
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.ui.components.JBCheckBox;
+import com.intellij.openapi.util.NotNullComputable;
+import consulo.disposer.Disposable;
+import consulo.emmet.localize.EmmetLocalize;
+import consulo.options.SimpleConfigurable;
+import consulo.ui.CheckBox;
+import consulo.ui.ComboBox;
+import consulo.ui.Component;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.border.BorderPosition;
+import consulo.ui.border.BorderStyle;
+import consulo.ui.layout.Layout;
+import consulo.ui.layout.VerticalLayout;
+import consulo.ui.util.LabeledBuilder;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+
+import javax.annotation.Nonnull;
 
 /**
  * User: zolotov
  * Date: 2/20/13
  */
-public class EmmetConfigurable implements Configurable
+public class EmmetConfigurable extends SimpleConfigurable<EmmetConfigurable.Panel> implements Configurable
 {
-	private JBCheckBox myEnableEmmetJBCheckBox;
-	private JComboBox myEmmetExpandShortcutCombo;
-
-	private JPanel myPanel;
-
-	private static final String SPACE = CodeInsightBundle.message("template.shortcut.space");
-	private static final String TAB = CodeInsightBundle.message("template.shortcut.tab");
-	private static final String ENTER = CodeInsightBundle.message("template.shortcut.enter");
-
-	public EmmetConfigurable()
+	public static class Panel implements NotNullComputable<Layout>
 	{
-		myEmmetExpandShortcutCombo.addItem(SPACE);
-		myEmmetExpandShortcutCombo.addItem(TAB);
-		myEmmetExpandShortcutCombo.addItem(ENTER);
-	}
+		private final CheckBox myEnableEmmetCheckBox;
+		private final ComboBox<Character> myEmmetExpandShortcutCombo;
+		private final VerticalLayout myLayout;
 
-	private char getSelectedEmmetExpandShortcut()
-	{
-		Object selectedItem = myEmmetExpandShortcutCombo.getSelectedItem();
-		if(TAB.equals(selectedItem))
+		@RequiredUIAccess
+		public Panel()
 		{
-			return TemplateSettings.TAB_CHAR;
+			myLayout = VerticalLayout.create();
+			myEnableEmmetCheckBox = CheckBox.create(EmmetLocalize.zenCodingEnableLabel());
+			myLayout.add(myEnableEmmetCheckBox);
+
+			ComboBox.Builder<Character> emmetExpandBox = ComboBox.builder();
+			emmetExpandBox.add(TemplateSettings.TAB_CHAR, CodeInsightBundle.message("template.shortcut.tab"));
+			emmetExpandBox.add(TemplateSettings.ENTER_CHAR, CodeInsightBundle.message("template.shortcut.enter"));
+			emmetExpandBox.add(TemplateSettings.SPACE_CHAR, CodeInsightBundle.message("template.shortcut.space"));
+
+			myEmmetExpandShortcutCombo = emmetExpandBox.build();
+			myEmmetExpandShortcutCombo.selectFirst();
+
+			Component labelExpand = LabeledBuilder.sided(EmmetLocalize.emmetExpandAbbreviationWith(), myEmmetExpandShortcutCombo);
+			labelExpand.addBorder(BorderPosition.LEFT, BorderStyle.EMPTY, 16);
+			myLayout.add(labelExpand);
+
+			myEnableEmmetCheckBox.addValueListener(valueEvent -> myEmmetExpandShortcutCombo.setEnabled(myEnableEmmetCheckBox.getValueOrError()));
 		}
-		else if(ENTER.equals(selectedItem))
+
+		@Nonnull
+		@Override
+		public Layout compute()
 		{
-			return TemplateSettings.ENTER_CHAR;
+			return myLayout;
 		}
-		return TemplateSettings.SPACE_CHAR;
 	}
 
-	@Nls
-	@Override
-	public String getDisplayName()
+	private final Provider<EmmetOptions> myEmmetOptionsProvider;
+
+	@Inject
+	public EmmetConfigurable(Provider<EmmetOptions> emmetOptionsProvider)
 	{
-		return null;
+		myEmmetOptionsProvider = emmetOptionsProvider;
 	}
 
-	@Nullable
+	@RequiredUIAccess
+	@Nonnull
 	@Override
-	public String getHelpTopic()
+	protected Panel createPanel(@Nonnull Disposable disposable)
 	{
-		return null;
+		return new Panel();
 	}
 
-	@Nullable
+	@RequiredUIAccess
 	@Override
-	public JComponent createComponent()
+	public boolean isModified(@Nonnull Panel panel)
 	{
-		return myPanel;
+		EmmetOptions emmetOptions = myEmmetOptionsProvider.get();
+		return emmetOptions.isEmmetEnabled() != panel.myEnableEmmetCheckBox.getValueOrError() ||
+				emmetOptions.getEmmetExpandShortcut() != panel.myEmmetExpandShortcutCombo.getValueOrError();
 	}
 
+	@RequiredUIAccess
 	@Override
-	public boolean isModified()
+	public void apply(@Nonnull Panel panel)
 	{
-		EmmetOptions emmetOptions = EmmetOptions.getInstance();
-		return emmetOptions.isEmmetEnabled() != myEnableEmmetJBCheckBox.isSelected() || emmetOptions.getEmmetExpandShortcut() !=
-				getSelectedEmmetExpandShortcut();
+		EmmetOptions emmetOptions = myEmmetOptionsProvider.get();
+		emmetOptions.setEmmetEnabled(panel.myEnableEmmetCheckBox.getValueOrError());
+		emmetOptions.setEmmetExpandShortcut(panel.myEmmetExpandShortcutCombo.getValueOrError());
 	}
 
-
+	@RequiredUIAccess
 	@Override
-	public void apply() throws ConfigurationException
+	public void reset(@Nonnull Panel panel)
 	{
-		EmmetOptions emmetOptions = EmmetOptions.getInstance();
-		emmetOptions.setEmmetEnabled(myEnableEmmetJBCheckBox.isSelected());
-		emmetOptions.setEmmetExpandShortcut(getSelectedEmmetExpandShortcut());
-	}
-
-	@Override
-	public void reset()
-	{
-		EmmetOptions emmetOptions = EmmetOptions.getInstance();
-		myEnableEmmetJBCheckBox.setSelected(emmetOptions.isEmmetEnabled());
-		myEmmetExpandShortcutCombo.setEnabled(emmetOptions.isEmmetEnabled());
+		EmmetOptions emmetOptions = myEmmetOptionsProvider.get();
+		panel.myEnableEmmetCheckBox.setValue(emmetOptions.isEmmetEnabled());
+		panel.myEmmetExpandShortcutCombo.setEnabled(emmetOptions.isEmmetEnabled());
 
 		char shortcut = (char) emmetOptions.getEmmetExpandShortcut();
-		if(shortcut == TemplateSettings.TAB_CHAR)
-		{
-			myEmmetExpandShortcutCombo.setSelectedItem(TAB);
-		}
-		else if(shortcut == TemplateSettings.ENTER_CHAR)
-		{
-			myEmmetExpandShortcutCombo.setSelectedItem(ENTER);
-		}
-		else
-		{
-			myEmmetExpandShortcutCombo.setSelectedItem(SPACE);
-		}
-	}
-
-	@Override
-	public void disposeUIResources()
-	{
-
+		panel.myEmmetExpandShortcutCombo.setValue(shortcut);
 	}
 }

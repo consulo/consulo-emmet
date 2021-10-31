@@ -15,27 +15,21 @@
  */
 package com.intellij.application.options.emmet;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import jakarta.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * User: zolotov
  * Date: 2/20/13
  */
-@State(
-		name = "EmmetOptions",
-		storages = {
-				@Storage(
-						file = StoragePathMacros.APP_CONFIG + "/editor.xml"
-				)
-		}
-)
+@Singleton
+@State(name = "EmmetOptions", storages = @Storage("emmet.xml"))
 public class EmmetOptions implements PersistentStateComponent<EmmetOptions>
 {
 	@NotNull

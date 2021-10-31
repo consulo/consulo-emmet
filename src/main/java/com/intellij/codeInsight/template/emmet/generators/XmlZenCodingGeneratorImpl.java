@@ -15,14 +15,7 @@
  */
 package com.intellij.codeInsight.template.emmet.generators;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.application.options.emmet.EmmetOptions;
-import com.intellij.application.options.emmet.XmlEmmetConfigurable;
 import com.intellij.codeInsight.template.HtmlTextContextType;
 import com.intellij.codeInsight.template.emmet.ZenCodingUtil;
 import com.intellij.ide.highlighter.HtmlFileType;
@@ -34,17 +27,18 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.options.UnnamedConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.XmlRecursiveElementVisitor;
+import com.intellij.psi.*;
 import com.intellij.psi.xml.XmlChildRole;
 import com.intellij.psi.xml.XmlTag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Eugene.Kudelevsky
@@ -185,10 +179,10 @@ public class XmlZenCodingGeneratorImpl extends XmlZenCodingGenerator
 		return emptyTagEnd != null || endTagEnd != null;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
-	public UnnamedConfigurable createConfigurable()
+	public String getConfigurableId()
 	{
-		return new XmlEmmetConfigurable();
+		return "editor.emmet.xml";
 	}
 }

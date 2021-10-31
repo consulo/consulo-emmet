@@ -1,0 +1,18 @@
+emmet.title:
+  text: Emmet (XML Zen Coding)
+emmet.configuration.title:
+  text: Emmet (Zen Coding)
+emmet.fuzzy.search:
+  text: Enable &fuzzy search among CSS abbreviations
+emmet.auto.insert.vendor.prefixes:
+  text: Auto insert css vendor &prefixes
+zen.coding.enable.label:
+  text: '&Enable Emmet'
+emmet.enable.bem.filter:
+  text: Enable &BEM filter by default
+emmet.expand.abbreviation.with:
+  text: Expand &abbreviation with
+zen.coding.enter.abbreviation.dialog.label:
+  text: Please enter an abbreviation
+zen.coding.incorrect.abbreviation.error:
+  text: Incorrect abbreviation
