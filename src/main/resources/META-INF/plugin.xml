@@ -20,6 +20,9 @@
 	<version>SNAPSHOT</version>
 	<depends>com.intellij.xml</depends>
 	<localize>consulo.emmet.EmmetLocalize</localize>
+	<tags>
+		<tag>editor.extension</tag>
+	</tags>
 
 	<extensionPoints>
 		<extensionPoint name="codingGenerator" interface="com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator"/>
