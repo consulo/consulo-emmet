@@ -39,7 +39,6 @@ import com.intellij.openapi.ui.popup.Balloon;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.JBPopupListener;
 import com.intellij.openapi.ui.popup.LightweightWindowEvent;
-import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
@@ -55,6 +54,7 @@ import consulo.emmet.localize.EmmetLocalize;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.swing.event.DocumentEvent;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -454,21 +454,26 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 	}
 
 	@Override
-	public boolean isApplicable(PsiFile file, int offset, boolean wrapping)
+	public boolean isApplicable(@Nonnull CustomTemplateCallback callback, int offset, boolean wrapping)
 	{
-		if(file == null)
+		PsiElement context = callback.getContext();
+		if(!context.isValid())
 		{
 			return false;
 		}
-		PsiElement element = CustomTemplateCallback.getContext(file, offset);
+		PsiElement element = CustomTemplateCallback.getContext(callback.getFile(), offset);
 		final ZenCodingGenerator applicableGenerator = findApplicableDefaultGenerator(element, wrapping);
 		return applicableGenerator != null && applicableGenerator.isEnabled();
 	}
 
 	@Override
-	public boolean hasCompletionItem(@NotNull PsiFile file, int offset)
+	public boolean hasCompletionItem(@NotNull CustomTemplateCallback callback, int offset)
 	{
-		PsiElement element = CustomTemplateCallback.getContext(file, offset);
+		PsiElement element = callback.getContext();
+		if(!element.isValid())
+		{
+			return false;
+		}
 		final ZenCodingGenerator applicableGenerator = findApplicableDefaultGenerator(element, false);
 		return applicableGenerator != null && applicableGenerator.isEnabled() && applicableGenerator.hasCompletionItem();
 	}
@@ -582,15 +587,8 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 
 			if(templatePrefix != null)
 			{
-				List<TemplateImpl> regularTemplates = TemplateManagerImpl.listApplicableTemplates(file, offset, false);
-				boolean regularTemplateWithSamePrefixExists = !ContainerUtil.filter(regularTemplates, new Condition<TemplateImpl>()
-				{
-					@Override
-					public boolean value(TemplateImpl template)
-					{
-						return templatePrefix.equals(template.getKey());
-					}
-				}).isEmpty();
+				List<TemplateImpl> regularTemplates = TemplateManagerImpl.listApplicableTemplates(TemplateActionContext.expanding(file, offset));
+				boolean regularTemplateWithSamePrefixExists = !ContainerUtil.filter(regularTemplates, template -> templatePrefix.equals(template.getKey())).isEmpty();
 
 				if(!regularTemplateWithSamePrefixExists)
 				{
