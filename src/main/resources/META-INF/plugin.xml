@@ -42,8 +42,7 @@
 		<applicationConfigurable
 				id="editor.emmet"
 				parentId="editor"
-				key="emmet.configuration.title"
-				bundle="messages.EmmetBundle"
+				displayName="Emmet"
 				instance="com.intellij.application.options.emmet.EmmetConfigurable"/>
 
 		<applicationConfigurable
