@@ -15,24 +15,28 @@
  */
 package com.intellij.codeInsight.template.emmet.generators;
 
-import com.intellij.application.options.emmet.EmmetOptions;
-import com.intellij.codeInsight.template.HtmlTextContextType;
+import com.intellij.codeInsight.template.emmet.options.EmmetOptions;
 import com.intellij.codeInsight.template.emmet.ZenCodingUtil;
-import com.intellij.ide.highlighter.HtmlFileType;
-import com.intellij.ide.highlighter.XHtmlFileType;
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.lang.xml.XMLLanguage;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.xml.XmlChildRole;
-import com.intellij.psi.xml.XmlTag;
+import consulo.application.ApplicationManager;
+import consulo.document.Document;
+import consulo.document.FileDocumentManager;
+import consulo.language.Language;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.project.Project;
+import consulo.util.lang.Couple;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.fileType.FileType;
+import consulo.xml.codeInsight.template.HtmlTextContextType;
+import consulo.xml.ide.highlighter.HtmlFileType;
+import consulo.xml.ide.highlighter.XHtmlFileType;
+import consulo.xml.lang.xml.XMLLanguage;
+import consulo.xml.psi.XmlRecursiveElementVisitor;
+import consulo.xml.psi.xml.XmlChildRole;
+import consulo.xml.psi.xml.XmlTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

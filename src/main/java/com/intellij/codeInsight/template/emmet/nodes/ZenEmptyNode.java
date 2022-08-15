@@ -15,11 +15,11 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
+import consulo.language.editor.template.CustomTemplateCallback;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
 
 /**
  * User: zolotov
@@ -31,8 +31,7 @@ public class ZenEmptyNode extends ZenCodingNode
 
 	@NotNull
 	@Override
-	public List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback,
-			boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
+	public List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback, boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
 	{
 		return Collections.emptyList();
 	}

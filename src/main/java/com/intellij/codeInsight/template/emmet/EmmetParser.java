@@ -15,20 +15,14 @@
  */
 package com.intellij.codeInsight.template.emmet;
 
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.nodes.*;
-import com.intellij.codeInsight.template.emmet.tokens.IdentifierToken;
-import com.intellij.codeInsight.template.emmet.tokens.NumberToken;
-import com.intellij.codeInsight.template.emmet.tokens.OperationToken;
-import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.codeInsight.template.emmet.tokens.TextToken;
-import com.intellij.codeInsight.template.emmet.tokens.ZenCodingToken;
-import com.intellij.codeInsight.template.emmet.tokens.ZenCodingTokens;
-import com.intellij.codeInsight.template.impl.TemplateImpl;
+import com.intellij.codeInsight.template.emmet.tokens.*;
+import consulo.language.editor.template.CustomTemplateCallback;
+import consulo.language.editor.template.Template;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * User: zolotov
@@ -237,7 +231,7 @@ public abstract class EmmetParser
 		String templateKey = ((IdentifierToken) token).getText();
 		advance();
 
-		TemplateImpl template = myCallback.findApplicableTemplate(templateKey);
+		Template template = myCallback.findApplicableTemplate(templateKey);
 		if(template == null && !ZenCodingUtil.isXML11ValidQName(templateKey))
 		{
 			return null;
@@ -251,7 +245,7 @@ public abstract class EmmetParser
 		return new TemplateNode(templateToken);
 	}
 
-	protected boolean setTemplate(final TemplateToken token, TemplateImpl template)
+	protected boolean setTemplate(final TemplateToken token, Template template)
 	{
 		if(template == null)
 		{

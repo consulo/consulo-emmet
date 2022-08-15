@@ -15,21 +15,23 @@
  */
 package com.intellij.codeInsight.template.emmet.generators;
 
-import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.emmet.EmmetParser;
 import com.intellij.codeInsight.template.emmet.XmlEmmetParser;
 import com.intellij.codeInsight.template.emmet.ZenCodingTemplate;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.emmet.tokens.ZenCodingToken;
-import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.xml.XmlTokenType;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.codeEditor.Editor;
+import consulo.component.extension.ExtensionPointName;
+import consulo.language.ast.TokenSet;
+import consulo.language.editor.template.CustomTemplateCallback;
+import consulo.language.editor.template.Template;
+import consulo.language.impl.psi.LeafPsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiErrorElement;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.xml.psi.xml.XmlTokenType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,15 +43,17 @@ import java.util.List;
 /**
  * @author Eugene.Kudelevsky
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class ZenCodingGenerator
 {
-	private static final ExtensionPointName<ZenCodingGenerator> EP_NAME = new ExtensionPointName<ZenCodingGenerator>("consulo.emmet.codingGenerator");
+	private static final ExtensionPointName<ZenCodingGenerator> EP_NAME = ExtensionPointName.create(ZenCodingGenerator.class);
+
 	private static final TokenSet VALID_LEAF_TYPES = TokenSet.create(XmlTokenType.XML_DATA_CHARACTERS, XmlTokenType.XML_CHAR_ENTITY_REF);
 
-	public abstract TemplateImpl generateTemplate(@NotNull TemplateToken token, boolean hasChildren, @NotNull PsiElement context);
+	public abstract Template generateTemplate(@NotNull TemplateToken token, boolean hasChildren, @NotNull PsiElement context);
 
 	@Nullable
-	public TemplateImpl createTemplateByKey(@NotNull String key)
+	public Template createTemplateByKey(@NotNull String key)
 	{
 		return null;
 	}

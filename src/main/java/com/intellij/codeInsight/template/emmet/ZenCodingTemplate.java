@@ -15,11 +15,7 @@
  */
 package com.intellij.codeInsight.template.emmet;
 
-import com.intellij.application.options.emmet.EmmetOptions;
-import com.intellij.codeInsight.CodeInsightBundle;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.template.*;
+import com.intellij.codeInsight.template.emmet.options.EmmetOptions;
 import com.intellij.codeInsight.template.emmet.filters.SingleLineEmmetFilter;
 import com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter;
 import com.intellij.codeInsight.template.emmet.generators.XmlZenCodingGenerator;
@@ -28,29 +24,41 @@ import com.intellij.codeInsight.template.emmet.nodes.*;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.emmet.tokens.TextToken;
 import com.intellij.codeInsight.template.emmet.tokens.ZenCodingToken;
-import com.intellij.codeInsight.template.impl.*;
-import com.intellij.diagnostic.AttachmentFactory;
-import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.*;
-import com.intellij.openapi.ui.popup.Balloon;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.JBPopupListener;
-import com.intellij.openapi.ui.popup.LightweightWindowEvent;
-import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.wm.IdeFocusManager;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.ui.*;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.ApplicationManager;
+import consulo.application.ApplicationPropertiesComponent;
+import consulo.application.ui.wm.ApplicationIdeFocusManager;
+import consulo.application.ui.wm.IdeFocusManager;
+import consulo.codeEditor.*;
+import consulo.codeEditor.util.EditorModificationUtil;
+import consulo.document.util.TextRange;
 import consulo.emmet.localize.EmmetLocalize;
+import consulo.language.editor.CodeInsightBundle;
+import consulo.language.editor.completion.CompletionParameters;
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.template.*;
+import consulo.language.editor.template.context.TemplateActionContext;
+import consulo.language.editor.template.event.TemplateEditingAdapter;
+import consulo.language.editor.template.event.TemplateEditingListener;
+import consulo.language.pattern.StandardPatterns;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.AttachmentFactoryUtil;
+import consulo.logging.Logger;
+import consulo.ui.ex.awt.LightColors;
+import consulo.ui.ex.awt.TextFieldWithHistory;
+import consulo.ui.ex.awt.TextFieldWithStoredHistory;
+import consulo.ui.ex.awt.event.DocumentAdapter;
+import consulo.ui.ex.popup.Balloon;
+import consulo.ui.ex.popup.JBPopupFactory;
+import consulo.ui.ex.popup.event.JBPopupListener;
+import consulo.ui.ex.popup.event.LightweightWindowEvent;
+import consulo.undoRedo.CommandProcessor;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Couple;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,10 +70,10 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.*;
 
-
 /**
  * @author Eugene.Kudelevsky
  */
+@ExtensionImpl
 public class ZenCodingTemplate extends CustomLiveTemplateBase
 {
 	public static final char MARKER = '\0';
@@ -216,8 +224,8 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 		{
 			if(key.equals(((TemplateNode) node).getTemplateToken().getKey()) && callback.findApplicableTemplates(key).size() > 1)
 			{
-				TemplateManagerImpl templateManager = (TemplateManagerImpl) callback.getTemplateManager();
-				Map<TemplateImpl, String> template2Argument = templateManager.findMatchingTemplates(callback.getFile(), callback.getEditor(), null,
+				TemplateManager templateManager = callback.getTemplateManager();
+				Map<Template, String> template2Argument = templateManager.findMatchingTemplates(callback.getFile(), callback.getEditor(), null,
 						TemplateSettings.getInstance());
 				Runnable runnable = templateManager.startNonCustomTemplates(template2Argument, callback.getEditor(), null);
 				if(runnable != null)
@@ -274,7 +282,7 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 		for(int i = 0, genNodesSize = genNodes.size(); i < genNodesSize; i++)
 		{
 			GenerationNode genNode = genNodes.get(i);
-			TemplateImpl template = genNode.generate(callback, generator, filters, true, segmentsLimit);
+			Template template = genNode.generate(callback, generator, filters, true, segmentsLimit);
 			int e = builder.insertTemplate(builder.length(), template, null);
 			if(i < genNodesSize - 1 && genNode.isInsertNewLineBetweenNodes())
 			{
@@ -304,9 +312,9 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 			public void beforeTemplateFinished(TemplateState state, Template template)
 			{
 				int variableNumber = state.getCurrentVariableNumber();
-				if(variableNumber >= 0 && template instanceof TemplateImpl)
+				if(variableNumber >= 0)
 				{
-					TemplateImpl t = (TemplateImpl) template;
+					Template t = (Template) template;
 					while(variableNumber < t.getVariableCount())
 					{
 						String varName = t.getVariableNameAt(variableNumber);
@@ -363,7 +371,7 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 		field.setPreferredSize(new Dimension(Math.max(220, fieldPreferredSize.width), fieldPreferredSize.height));
 		field.setHistorySize(10);
 		final JBPopupFactory popupFactory = JBPopupFactory.getInstance();
-		final BalloonImpl balloon = (BalloonImpl) popupFactory.createDialogBalloonBuilder(field, EmmetLocalize.emmetTitle().getValue())
+		final Balloon balloon = popupFactory.createDialogBalloonBuilder(field, EmmetLocalize.emmetTitle().getValue())
 				.setCloseButtonEnabled(false)
 				.setBlockClicksThroughBalloon(true)
 				.setHideOnClickOutside(true)
@@ -393,7 +401,7 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 							if(validateTemplateKey(field, balloon, abbreviation, callback))
 							{
 								doWrap(abbreviation, callback);
-								PropertiesComponent.getInstance().setValue(EMMET_LAST_WRAP_ABBREVIATIONS_KEY, abbreviation);
+								ApplicationPropertiesComponent.getInstance().setValue(EMMET_LAST_WRAP_ABBREVIATIONS_KEY, abbreviation);
 								field.addCurrentTextToHistory();
 								balloon.hide(true);
 							}
@@ -411,12 +419,12 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 			@Override
 			public void beforeShown(LightweightWindowEvent event)
 			{
-				field.setText(PropertiesComponent.getInstance().getValue(EMMET_LAST_WRAP_ABBREVIATIONS_KEY, ""));
+				field.setText(ApplicationPropertiesComponent.getInstance().getValue(EMMET_LAST_WRAP_ABBREVIATIONS_KEY, ""));
 			}
 		});
-		balloon.show(popupFactory.guessBestPopupLocation(callback.getEditor()), Balloon.Position.below);
+		balloon.show(EditorPopupHelper.getInstance().guessBestPopupLocation(callback.getEditor()), Balloon.Position.below);
 
-		final IdeFocusManager focusManager = IdeFocusManager.getInstance(callback.getProject());
+		final IdeFocusManager focusManager = ApplicationIdeFocusManager.getInstance().getInstanceForProject(callback.getProject());
 		focusManager.doWhenFocusSettlesDown(new Runnable()
 		{
 			@Override
@@ -447,7 +455,7 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 		{
 			int offset = callback.getEditor().getCaretModel().getOffset();
 			LOG.error("Emmet is disabled for context for file " + callback.getFileType().getName() + " in offset: " + offset,
-					AttachmentFactory.createAttachment(callback.getEditor().getDocument()));
+					AttachmentFactoryUtil.createAttachment(callback.getEditor().getDocument()));
 			return false;
 		}
 		return checkTemplateKey(inputString, callback, generator);
@@ -565,7 +573,7 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 		ZenCodingGenerator generator = findApplicableDefaultGenerator(CustomTemplateCallback.getContext(file, offset), false);
 		if(generator != null && generator.hasCompletionItem())
 		{
-			final Ref<TemplateImpl> generatedTemplate = new Ref<TemplateImpl>();
+			final Ref<Template> generatedTemplate = new Ref<Template>();
 			final CustomTemplateCallback callback = new CustomTemplateCallback(editor, file)
 			{
 				@Override
@@ -576,9 +584,9 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 				@Override
 				public void startTemplate(@NotNull Template template, Map<String, String> predefinedValues, TemplateEditingListener listener)
 				{
-					if(template instanceof TemplateImpl && !((TemplateImpl) template).isDeactivated())
+					if(!template.isDeactivated())
 					{
-						generatedTemplate.set((TemplateImpl) template);
+						generatedTemplate.set(template);
 					}
 				}
 			};
@@ -587,17 +595,17 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 
 			if(templatePrefix != null)
 			{
-				List<TemplateImpl> regularTemplates = TemplateManagerImpl.listApplicableTemplates(TemplateActionContext.expanding(file, offset));
+				List<? extends Template> regularTemplates = TemplateManager.getInstance(callback.getProject()).listApplicableTemplates(TemplateActionContext.expanding(file, offset));
 				boolean regularTemplateWithSamePrefixExists = !ContainerUtil.filter(regularTemplates, template -> templatePrefix.equals(template.getKey())).isEmpty();
 
 				if(!regularTemplateWithSamePrefixExists)
 				{
 					// exclude perfect matches with existing templates because LiveTemplateCompletionContributor handles it
-					final Collection<SingleLineEmmetFilter> extraFilters = ContainerUtil.newLinkedList(new SingleLineEmmetFilter());
+					final Collection<SingleLineEmmetFilter> extraFilters = new LinkedList<>(List.of(new SingleLineEmmetFilter()));
 					expand(templatePrefix, callback, null, generator, extraFilters, false, 0);
 					if(!generatedTemplate.isNull())
 					{
-						final TemplateImpl template = generatedTemplate.get();
+						final Template template = generatedTemplate.get();
 						template.setKey(templatePrefix);
 						template.setDescription(template.getTemplateText());
 

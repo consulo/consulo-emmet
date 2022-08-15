@@ -15,14 +15,9 @@
  */
 package com.intellij.codeInsight.template.emmet.generators;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import consulo.util.lang.StringUtil;
 
-import com.intellij.openapi.util.text.StringUtil;
+import java.util.*;
 
 /**
  * User: zolotov

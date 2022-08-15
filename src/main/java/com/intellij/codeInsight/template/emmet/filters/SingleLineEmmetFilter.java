@@ -15,18 +15,20 @@
  */
 package com.intellij.codeInsight.template.emmet.filters;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.lang.xml.XMLLanguage;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.editor.template.Template;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.StringUtil;
+import consulo.xml.lang.xml.XMLLanguage;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * User: zolotov
  * Date: 2/4/13
  */
+@ExtensionImpl
 public class SingleLineEmmetFilter extends ZenCodingFilter
 {
 	@NotNull
@@ -47,7 +49,7 @@ public class SingleLineEmmetFilter extends ZenCodingFilter
 	@Override
 	public GenerationNode filterNode(@NotNull GenerationNode node)
 	{
-		TemplateImpl template = node.getTemplateToken().getTemplate();
+		Template template = node.getTemplateToken().getTemplate();
 		if(template != null)
 		{
 			template.setToReformat(false);

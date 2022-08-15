@@ -15,32 +15,27 @@
  */
 package com.intellij.codeInsight.template.emmet.filters;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
-import com.intellij.application.options.emmet.XmlEmmetOptions;
+import com.google.common.collect.Lists;
+import com.intellij.codeInsight.template.emmet.options.XmlEmmetOptions;
 import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
-import com.intellij.lang.xml.XMLLanguage;
-import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiElement;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.psi.PsiElement;
 import consulo.util.dataholder.Key;
+import consulo.util.lang.Couple;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
+import consulo.xml.lang.xml.XMLLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Iterables.*;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Lists.newLinkedList;
 
 /**
  * User: zolotov
@@ -50,6 +45,7 @@ import static com.google.common.collect.Lists.newLinkedList;
  * See the original source code here: https://github.com/emmetio/emmet/blob/master/javascript/filters/bem.js
  * And documentation here: http://docs.emmet.io/filters/bem/
  */
+@ExtensionImpl
 public class BemEmmetFilter extends ZenCodingFilter
 {
 	private static final Key<BemState> BEM_STATE = Key.create("BEM_STATE");
@@ -59,48 +55,28 @@ public class BemEmmetFilter extends ZenCodingFilter
 	private static final String SHORT_ELEMENT_PREFIX = "-";
 
 	private static final Joiner ELEMENTS_JOINER = Joiner.on(ELEMENT_SEPARATOR).skipNulls();
-	private static final Splitter ELEMENTS_SPLITTER = Splitter.on(ELEMENT_SEPARATOR);
 	private static final Splitter MODIFIERS_SPLITTER = Splitter.on(MODIFIER_SEPARATOR).limit(2);
 	private static final Splitter CLASS_NAME_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
-	private static final Joiner CLASS_NAME_JOINER = Joiner.on(' ');
 
-	private static final Function<String, String> CLASS_NAME_NORMALIZER = new Function<String, String>()
+	private static final com.google.common.base.Function<String, String> CLASS_NAME_NORMALIZER = input ->
 	{
-		@NotNull
-		@Override
-		public String apply(@NotNull String input)
+		if(!input.startsWith(SHORT_ELEMENT_PREFIX))
 		{
-			if(!input.startsWith(SHORT_ELEMENT_PREFIX))
-			{
-				return input;
-			}
-
-			StringBuilder result = new StringBuilder();
-			while(input.startsWith(SHORT_ELEMENT_PREFIX))
-			{
-				input = input.substring(SHORT_ELEMENT_PREFIX.length());
-				result.append(ELEMENT_SEPARATOR);
-			}
-			return result.append(input).toString();
+			return input;
 		}
+
+		StringBuilder result = new StringBuilder();
+		while(input.startsWith(SHORT_ELEMENT_PREFIX))
+		{
+			input = input.substring(SHORT_ELEMENT_PREFIX.length());
+			result.append(ELEMENT_SEPARATOR);
+		}
+		return result.append(input).toString();
 	};
 
-	private static final Predicate<String> BLOCK_NAME_PREDICATE = new Predicate<String>()
-	{
-		@Override
-		public boolean apply(String className)
-		{
-			return Pattern.compile("^[A-z]-").matcher(className).matches();
-		}
-	};
-	private static final Predicate<String> STARTS_WITH_LETTER = new Predicate<String>()
-	{
-		@Override
-		public boolean apply(@Nullable String input)
-		{
-			return input != null && input.length() > 0 && Character.isLetter(input.charAt(0));
-		}
-	};
+	private static final Predicate<String> BLOCK_NAME_PREDICATE = className -> Pattern.compile("^[A-z]-").matcher(className).matches();
+
+	private static final Predicate<String> STARTS_WITH_LETTER = input -> input != null && input.length() > 0 && Character.isLetter(input.charAt(0));
 
 	@NotNull
 	@Override
@@ -131,15 +107,8 @@ public class BemEmmetFilter extends ZenCodingFilter
 		{
 			Iterable<String> classNames = extractClasses(classNamePair.second);
 			BEM_STATE.set(node, new BemState(suggestBlockName(classNames), null, null));
-			final Set<String> newClassNames = ImmutableSet.copyOf(concat(transform(classNames, new Function<String, Iterable<String>>()
-			{
-				@Override
-				public Iterable<String> apply(String className)
-				{
-					return processClassName(className, node);
-				}
-			})));
-			attribute2Value.add(Couple.of("class", CLASS_NAME_JOINER.join(newClassNames)));
+			final Set<String> newClassNames = ImmutableSet.copyOf(concat(transform(classNames, className -> processClassName(className, node))));
+			attribute2Value.add(Couple.of("class", String.join(" ", newClassNames)));
 		}
 		return node;
 	}
@@ -151,24 +120,24 @@ public class BemEmmetFilter extends ZenCodingFilter
 
 		BemState nodeBemState = BEM_STATE.get(node);
 		BemState bemState = extractBemStateFromClassName(className);
-		List<String> result = newLinkedList();
+		List<String> result = new LinkedList<>();
 		if(!bemState.isEmpty())
 		{
 			String block = bemState.getBlock();
-			if(isNullOrEmpty(block))
+			if(StringUtil.isEmpty(block))
 			{
-				block = nullToEmpty(nodeBemState != null ? nodeBemState.getBlock() : null);
+				block = StringUtil.notNullize(nodeBemState != null ? nodeBemState.getBlock() : null);
 				bemState.setBlock(block);
 			}
 			String prefix = block;
 			String element = bemState.getElement();
-			if(!isNullOrEmpty(element))
+			if(!StringUtil.isEmpty(element))
 			{
 				prefix += ELEMENT_SEPARATOR + element;
 			}
 			result.add(prefix);
 			String modifier = bemState.getModifier();
-			if(!isNullOrEmpty(modifier))
+			if(!StringUtil.isEmpty(modifier))
 			{
 				result.add(prefix + MODIFIER_SEPARATOR + modifier);
 			}
@@ -187,16 +156,16 @@ public class BemEmmetFilter extends ZenCodingFilter
 		final BemState result = new BemState();
 		if(className.contains(ELEMENT_SEPARATOR))
 		{
-			final Iterator<String> elementsIterator = ELEMENTS_SPLITTER.split(className).iterator();
+			final Iterator<String> elementsIterator = StringUtil.split(className, ELEMENT_SEPARATOR).iterator();
 			result.setBlock(elementsIterator.next());
 
-			final Collection<String> elementParts = newLinkedList();
+			final Collection<String> elementParts = new LinkedList<>();
 			while(elementsIterator.hasNext())
 			{
 				final String elementPart = elementsIterator.next();
 				if(!elementsIterator.hasNext())
 				{
-					final List<String> elementModifiers = newArrayList(MODIFIERS_SPLITTER.split(elementPart));
+					final List<String> elementModifiers = Lists.newArrayList(MODIFIERS_SPLITTER.split(elementPart));
 					elementParts.add(getFirst(elementModifiers, null));
 					if(elementModifiers.size() > 1)
 					{
@@ -257,10 +226,10 @@ public class BemEmmetFilter extends ZenCodingFilter
 			if(bemState != null)
 			{
 				String prefix = bemState.getBlock();
-				if(!isNullOrEmpty(prefix))
+				if(!StringUtil.isEmpty(prefix))
 				{
 					String element = bemState.getElement();
-					if(MODIFIER_SEPARATOR.equals(separator) && !isNullOrEmpty(element))
+					if(MODIFIER_SEPARATOR.equals(separator) && !StringUtil.isEmpty(element))
 					{
 						prefix = prefix + separator + element;
 					}
@@ -328,7 +297,7 @@ public class BemEmmetFilter extends ZenCodingFilter
 		for(int i = 0; i < attribute2Value.size(); i++)
 		{
 			Couple<String> pair = attribute2Value.get(i);
-			if("class".equals(pair.first) && !isNullOrEmpty(pair.second))
+			if("class".equals(pair.first) && !StringUtil.isEmpty(pair.second))
 			{
 				return attribute2Value.remove(i);
 			}
@@ -391,7 +360,7 @@ public class BemEmmetFilter extends ZenCodingFilter
 
 		public boolean isEmpty()
 		{
-			return isNullOrEmpty(block) && isNullOrEmpty(element) && isNullOrEmpty(modifier);
+			return StringUtil.isEmpty(block) && StringUtil.isEmpty(element) && StringUtil.isEmpty(modifier);
 		}
 
 		@Nullable

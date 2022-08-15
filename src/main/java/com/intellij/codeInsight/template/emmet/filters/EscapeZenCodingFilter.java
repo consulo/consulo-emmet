@@ -15,14 +15,16 @@
  */
 package com.intellij.codeInsight.template.emmet.filters;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.lang.xml.XMLLanguage;
-import com.intellij.psi.PsiElement;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.psi.PsiElement;
+import consulo.xml.lang.xml.XMLLanguage;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Eugene.Kudelevsky
  */
+@ExtensionImpl
 public class EscapeZenCodingFilter extends ZenCodingFilter
 {
 	@NotNull

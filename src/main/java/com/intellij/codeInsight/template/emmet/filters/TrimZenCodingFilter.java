@@ -1,20 +1,21 @@
 package com.intellij.codeInsight.template.emmet.filters;
 
-import java.util.regex.Pattern;
-
-import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.lang.xml.XMLLanguage;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.XmlElementVisitor;
-import com.intellij.psi.xml.XmlDocument;
-import com.intellij.psi.xml.XmlTag;
-import com.intellij.psi.xml.XmlTagValue;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.psi.PsiElement;
+import consulo.xml.lang.xml.XMLLanguage;
+import consulo.xml.psi.XmlElementVisitor;
+import consulo.xml.psi.xml.XmlDocument;
+import consulo.xml.psi.xml.XmlTag;
+import consulo.xml.psi.xml.XmlTagValue;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Pattern;
 /**
  * @author Eugene.Kudelevsky
  */
+@ExtensionImpl
 public class TrimZenCodingFilter extends ZenCodingFilter
 {
 	private static final Pattern PATTERN = Pattern.compile("^([\\s|\u00a0])?[\\d|#|\\-|\\*|\u2022]+\\.?\\s*");

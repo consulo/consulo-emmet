@@ -15,10 +15,10 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import java.util.List;
-
+import consulo.language.editor.template.CustomTemplateCallback;
 import org.jetbrains.annotations.NotNull;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
+
+import java.util.List;
 
 /**
  * @author Eugene.Kudelevsky

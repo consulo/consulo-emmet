@@ -14,28 +14,33 @@
  * limitations under the License.
  */
 
-package com.intellij.application.options.emmet;
+package com.intellij.codeInsight.template.emmet.options;
 
-import com.intellij.openapi.options.Configurable;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.configurable.ApplicationConfigurable;
+import consulo.configurable.SimpleConfigurableByProperties;
 import consulo.disposer.Disposable;
 import consulo.emmet.localize.EmmetLocalize;
-import consulo.options.SimpleConfigurableByProperties;
 import consulo.ui.CheckBox;
 import consulo.ui.Component;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.layout.VerticalLayout;
+import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author VISTALL
  * @since 23.08.13.
  */
-public class XmlEmmetConfigurable extends SimpleConfigurableByProperties implements Configurable
+@ExtensionImpl
+public class XmlEmmetConfigurable extends SimpleConfigurableByProperties implements ApplicationConfigurable
 {
 	private final Provider<XmlEmmetOptions> myXmlEmmetOptionsProvider;
 
+	@Inject
 	public XmlEmmetConfigurable(Provider<XmlEmmetOptions> xmlEmmetOptionsProvider)
 	{
 		myXmlEmmetOptionsProvider = xmlEmmetOptionsProvider;
@@ -55,5 +60,26 @@ public class XmlEmmetConfigurable extends SimpleConfigurableByProperties impleme
 		propertyBuilder.add(enableBemFilter, xmlEmmetOptions::isBemFilterEnabledByDefault, xmlEmmetOptions::setBemFilterEnabledByDefault);
 
 		return rootLayout;
+	}
+
+	@Nonnull
+	@Override
+	public String getId()
+	{
+		return "editor.emmet.xml";
+	}
+
+	@Nullable
+	@Override
+	public String getParentId()
+	{
+		return "editor.emmet";
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "XML/HTML";
 	}
 }

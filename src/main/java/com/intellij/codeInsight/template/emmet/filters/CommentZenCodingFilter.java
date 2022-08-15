@@ -15,18 +15,20 @@
  */
 package com.intellij.codeInsight.template.emmet.filters;
 
+import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.StringUtil;
+import consulo.xml.lang.xml.XMLLanguage;
+import consulo.xml.psi.xml.XmlDocument;
+import consulo.xml.psi.xml.XmlTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.lang.xml.XMLLanguage;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.xml.XmlDocument;
-import com.intellij.psi.xml.XmlTag;
 
 /**
  * @author Eugene.Kudelevsky
  */
+@ExtensionImpl
 public class CommentZenCodingFilter extends ZenCodingFilter
 {
 	private static String buildCommentString(@Nullable String classAttr, @Nullable String idAttr)

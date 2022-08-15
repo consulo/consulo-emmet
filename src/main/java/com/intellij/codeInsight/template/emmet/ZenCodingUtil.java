@@ -15,16 +15,16 @@
  */
 package com.intellij.codeInsight.template.emmet;
 
+import com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter;
+import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
+import consulo.language.editor.template.CustomTemplateCallback;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.fileType.FileType;
+import consulo.xml.ide.highlighter.HtmlFileType;
+import consulo.xml.ide.highlighter.XHtmlFileType;
 import org.apache.xerces.util.XML11Char;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter;
-import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
-import com.intellij.ide.highlighter.HtmlFileType;
-import com.intellij.ide.highlighter.XHtmlFileType;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.util.text.StringUtil;
 
 /**
  * @author Eugene.Kudelevsky
