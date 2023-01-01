@@ -15,18 +15,21 @@
  */
 package com.intellij.codeInsight.template.emmet.filters;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.PsiElement;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.language.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Eugene.Kudelevsky
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class ZenCodingFilter
 {
-	public static final ExtensionPointName<ZenCodingFilter> EP_NAME = new ExtensionPointName<ZenCodingFilter>("consulo.emmet.codingFilter");
+	public static final ExtensionPointName<ZenCodingFilter> EP_NAME = ExtensionPointName.create(ZenCodingFilter.class);
 
 	@NotNull
 	public static ZenCodingFilter[] getInstances()

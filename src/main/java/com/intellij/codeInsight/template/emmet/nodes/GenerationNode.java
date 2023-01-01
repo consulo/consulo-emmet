@@ -15,9 +15,6 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import com.google.common.base.Strings;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import com.intellij.codeInsight.template.LiveTemplateBuilder;
 import com.intellij.codeInsight.template.emmet.ZenCodingUtil;
 import com.intellij.codeInsight.template.emmet.filters.SingleLineEmmetFilter;
 import com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter;
@@ -25,34 +22,34 @@ import com.intellij.codeInsight.template.emmet.generators.XmlZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.generators.XmlZenCodingGeneratorImpl;
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.ide.highlighter.XmlFileType;
-import com.intellij.injected.editor.DocumentWindow;
-import com.intellij.lang.xml.XMLLanguage;
-import com.intellij.openapi.command.undo.UndoConstants;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.XmlElementFactory;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.xml.*;
-import com.intellij.util.LocalTimeCounter;
 import com.intellij.xml.util.HtmlUtil;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.editor.template.CustomTemplateCallback;
+import consulo.language.editor.template.LiveTemplateBuilder;
+import consulo.language.editor.template.Template;
+import consulo.language.file.inject.DocumentWindow;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiFileFactory;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.undoRedo.util.UndoConstants;
 import consulo.util.dataholder.UserDataHolderBase;
+import consulo.util.lang.Couple;
+import consulo.util.lang.LocalTimeCounter;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.xml.ide.highlighter.XmlFileType;
+import consulo.xml.lang.xml.XMLLanguage;
+import consulo.xml.psi.XmlElementFactory;
+import consulo.xml.psi.xml.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @author Eugene.Kudelevsky
@@ -60,7 +57,7 @@ import static com.google.common.collect.Lists.newArrayList;
 public class GenerationNode extends UserDataHolderBase
 {
 	private final TemplateToken myTemplateToken;
-	private final List<GenerationNode> myChildren = newArrayList();
+	private final List<GenerationNode> myChildren = new ArrayList<>();
 	private final int myNumberInIteration;
 	private final int myTotalIterations;
 	private String mySurroundedText;
@@ -152,7 +149,7 @@ public class GenerationNode extends UserDataHolderBase
 	}
 
 	@NotNull
-	public TemplateImpl generate(
+	public Template generate(
 			@NotNull CustomTemplateCallback callback,
 			@Nullable ZenCodingGenerator generator,
 			@NotNull Collection<ZenCodingFilter> filters,
@@ -187,12 +184,12 @@ public class GenerationNode extends UserDataHolderBase
 			Document document = editor.getDocument();
 			if(document instanceof DocumentWindow && ((DocumentWindow) document).isOneLine())
 			{
-		/*
-         * If document is one-line that in the moment of inserting text,
-         * new line chars will be filtered (see DocumentWindowImpl#insertString).
-         * So in this case we should filter text by SingleLineAvoid in order to avoid
-         * inconsistency of template segments.
-         */
+				/*
+				 * If document is one-line that in the moment of inserting text,
+				 * new line chars will be filtered (see DocumentWindowImpl#insertString).
+				 * So in this case we should filter text by SingleLineAvoid in order to avoid
+				 * inconsistency of template segments.
+				 */
 				oneLineTemplateExpanding = true;
 				filters.add(new SingleLineEmmetFilter());
 			}
@@ -212,7 +209,7 @@ public class GenerationNode extends UserDataHolderBase
 		int end = -1;
 		boolean hasChildren = myChildren.size() > 0;
 
-		TemplateImpl parentTemplate;
+		Template parentTemplate;
 		Map<String, String> predefinedValues;
 		if(myTemplateToken instanceof TemplateToken && generator instanceof XmlZenCodingGenerator)
 		{
@@ -255,7 +252,7 @@ public class GenerationNode extends UserDataHolderBase
 		for(int i = 0, myChildrenSize = myChildren.size(); i < myChildrenSize; i++)
 		{
 			GenerationNode child = myChildren.get(i);
-			TemplateImpl childTemplate = child.generate(callback, generator, filters, !myContainsSurroundedTextMarker, segmentsLimit);
+			Template childTemplate = child.generate(callback, generator, filters, !myContainsSurroundedTextMarker, segmentsLimit);
 
 			boolean blockTag = child.isBlockTag();
 
@@ -286,10 +283,10 @@ public class GenerationNode extends UserDataHolderBase
 		return builder.buildTemplate();
 	}
 
-	private static TemplateImpl invokeTemplate(
+	private static Template invokeTemplate(
 			TemplateToken token, boolean hasChildren, final CustomTemplateCallback callback, @Nullable ZenCodingGenerator generator)
 	{
-		TemplateImpl template = token.getTemplate();
+		Template template = token.getTemplate();
 		if(generator != null)
 		{
 			assert template != null;
@@ -300,17 +297,17 @@ public class GenerationNode extends UserDataHolderBase
 		return template;
 	}
 
-	private TemplateImpl invokeXmlTemplate(
+	private Template invokeXmlTemplate(
 			final TemplateToken token,
 			CustomTemplateCallback callback,
 			@Nullable ZenCodingGenerator generator,
 			final boolean hasChildren,
 			final List<Couple<String>> attr2value)
 	{
-    /*assert generator == null || generator instanceof XmlZenCodingGenerator :
-      "The generator cannot process TemplateToken because it doesn't inherit XmlZenCodingGenerator";*/
+	/*assert generator == null || generator instanceof XmlZenCodingGenerator :
+	  "The generator cannot process TemplateToken because it doesn't inherit XmlZenCodingGenerator";*/
 
-		TemplateImpl template = token.getTemplate();
+		Template template = token.getTemplate();
 		assert template != null;
 
 		final XmlFile xmlFile = token.getFile();
@@ -321,7 +318,7 @@ public class GenerationNode extends UserDataHolderBase
 		{
 			for(Couple<String> pair : attr2value)
 			{
-				if(Strings.isNullOrEmpty(pair.second))
+				if(StringUtil.isEmpty(pair.second))
 				{
 					template.addVariable(prepareVariableName(pair.first), "", "", true);
 				}
@@ -349,8 +346,8 @@ public class GenerationNode extends UserDataHolderBase
 	}
 
 	@NotNull
-	private static TemplateImpl expandTemplate(
-			@NotNull TemplateImpl template, Map<String, String> predefinedVarValues, String surroundedText, int segmentsLimit)
+	private static Template expandTemplate(
+			@NotNull Template template, Map<String, String> predefinedVarValues, String surroundedText, int segmentsLimit)
 	{
 		LiveTemplateBuilder builder = new LiveTemplateBuilder(segmentsLimit);
 		if(predefinedVarValues == null && surroundedText == null)
@@ -422,7 +419,7 @@ public class GenerationNode extends UserDataHolderBase
 		return offset;
 	}
 
-	private static void removeVariablesWhichHasNoSegment(TemplateImpl template)
+	private static void removeVariablesWhichHasNoSegment(Template template)
 	{
 		Set<String> segments = new HashSet<String>();
 		for(int i = 0; i < template.getSegmentsCount(); i++)
@@ -483,7 +480,7 @@ public class GenerationNode extends UserDataHolderBase
 				{
 					myContainsSurroundedTextMarker = true;
 				}
-				tag.setAttribute(pair.first, Strings.isNullOrEmpty(pair.second) ? "$" + prepareVariableName(pair.first) + "$" : ZenCodingUtil
+				tag.setAttribute(pair.first, StringUtil.isEmpty(pair.second) ? "$" + prepareVariableName(pair.first) + "$" : ZenCodingUtil
 						.getValue(pair.second, myNumberInIteration, myTotalIterations, mySurroundedText));
 				iterator.remove();
 			}

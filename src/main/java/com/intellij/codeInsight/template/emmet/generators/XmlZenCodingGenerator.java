@@ -15,18 +15,19 @@
  */
 package com.intellij.codeInsight.template.emmet.generators;
 
-import java.util.List;
-
+import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
+import com.intellij.xml.util.HtmlUtil;
+import consulo.language.editor.template.Template;
+import consulo.language.editor.template.TemplateBuilderFactory;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.Couple;
+import consulo.xml.psi.xml.XmlDocument;
+import consulo.xml.psi.xml.XmlFile;
+import consulo.xml.psi.xml.XmlTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.openapi.util.Couple;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.xml.XmlDocument;
-import com.intellij.psi.xml.XmlFile;
-import com.intellij.psi.xml.XmlTag;
-import com.intellij.xml.util.HtmlUtil;
+
+import java.util.List;
 
 
 /**
@@ -35,16 +36,16 @@ import com.intellij.xml.util.HtmlUtil;
 public abstract class XmlZenCodingGenerator extends ZenCodingGenerator
 {
 	@Override
-	public TemplateImpl generateTemplate(@NotNull TemplateToken token, boolean hasChildren, @NotNull PsiElement context)
+	public Template generateTemplate(@NotNull TemplateToken token, boolean hasChildren, @NotNull PsiElement context)
 	{
 		String s = toString(token, hasChildren, context);
-		TemplateImpl template = token.getTemplate().copy();
+		Template template = token.getTemplate().copy();
 		template.setString(s);
 		return template;
 	}
 
 	@Override
-	public TemplateImpl createTemplateByKey(@NotNull String key)
+	public Template createTemplateByKey(@NotNull String key)
 	{
 		StringBuilder builder = new StringBuilder("<");
 		builder.append(key).append('>');
@@ -52,7 +53,7 @@ public abstract class XmlZenCodingGenerator extends ZenCodingGenerator
 		{
 			builder.append("$END$</").append(key).append('>');
 		}
-		return new TemplateImpl("", builder.toString(), "");
+		return TemplateBuilderFactory.getInstance().createRawTemplate("", builder.toString(), "");
 	}
 
 	@NotNull

@@ -15,13 +15,11 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import static com.intellij.util.containers.ContainerUtil.newArrayList;
-
-import java.util.List;
-
+import consulo.language.editor.template.CustomTemplateCallback;
 import org.jetbrains.annotations.NotNull;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import com.intellij.util.containers.ContainerUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author zolotov
@@ -50,9 +48,9 @@ public class ClimbUpOperationNode extends ZenCodingNode
 	@NotNull
 	@Override
 	public List<GenerationNode> expand(int numberInIteration, int totalIterations, String surroundedText, CustomTemplateCallback callback,
-			boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
+									   boolean insertSurroundedTextAtTheEnd, GenerationNode parent)
 	{
-		List<GenerationNode> result = newArrayList();
+		List<GenerationNode> result = new ArrayList<>();
 		result.addAll(myLeftOperand.expand(numberInIteration, totalIterations, surroundedText, callback, insertSurroundedTextAtTheEnd, parent));
 		GenerationNode grandParent = parent != null ? parent.getParent() : null;
 		if(grandParent != null)
@@ -70,7 +68,7 @@ public class ClimbUpOperationNode extends ZenCodingNode
 	@Override
 	public List<ZenCodingNode> getChildren()
 	{
-		return ContainerUtil.newLinkedList(myLeftOperand, myRightOperand);
+		return List.of(myLeftOperand, myRightOperand);
 	}
 
 	@Override

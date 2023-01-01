@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.application.options.emmet;
+package com.intellij.codeInsight.template.emmet.options;
 
-import com.intellij.codeInsight.CodeInsightBundle;
-import com.intellij.codeInsight.template.impl.TemplateSettings;
-import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.util.NotNullComputable;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.configurable.ApplicationConfigurable;
+import consulo.configurable.Configurable;
+import consulo.configurable.SimpleConfigurable;
+import consulo.configurable.StandardConfigurableIds;
 import consulo.disposer.Disposable;
 import consulo.emmet.localize.EmmetLocalize;
-import consulo.options.SimpleConfigurable;
+import consulo.language.editor.CodeInsightBundle;
 import consulo.ui.CheckBox;
 import consulo.ui.ComboBox;
 import consulo.ui.Component;
@@ -35,14 +36,17 @@ import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 /**
  * User: zolotov
  * Date: 2/20/13
  */
-public class EmmetConfigurable extends SimpleConfigurable<EmmetConfigurable.Panel> implements Configurable
+@ExtensionImpl
+public class EmmetConfigurable extends SimpleConfigurable<EmmetConfigurable.Panel> implements Configurable, ApplicationConfigurable
 {
-	public static class Panel implements NotNullComputable<Layout>
+	public static class Panel implements Supplier<Layout>
 	{
 		private final CheckBox myEnableEmmetCheckBox;
 		private final ComboBox<Character> myEmmetExpandShortcutCombo;
@@ -56,9 +60,9 @@ public class EmmetConfigurable extends SimpleConfigurable<EmmetConfigurable.Pane
 			myLayout.add(myEnableEmmetCheckBox);
 
 			ComboBox.Builder<Character> emmetExpandBox = ComboBox.builder();
-			emmetExpandBox.add(TemplateSettings.TAB_CHAR, CodeInsightBundle.message("template.shortcut.tab"));
-			emmetExpandBox.add(TemplateSettings.ENTER_CHAR, CodeInsightBundle.message("template.shortcut.enter"));
-			emmetExpandBox.add(TemplateSettings.SPACE_CHAR, CodeInsightBundle.message("template.shortcut.space"));
+			emmetExpandBox.add('\t', CodeInsightBundle.message("template.shortcut.tab"));
+			emmetExpandBox.add('\n', CodeInsightBundle.message("template.shortcut.enter"));
+			emmetExpandBox.add(' ', CodeInsightBundle.message("template.shortcut.space"));
 
 			myEmmetExpandShortcutCombo = emmetExpandBox.build();
 			myEmmetExpandShortcutCombo.selectFirst();
@@ -72,7 +76,7 @@ public class EmmetConfigurable extends SimpleConfigurable<EmmetConfigurable.Pane
 
 		@Nonnull
 		@Override
-		public Layout compute()
+		public Layout get()
 		{
 			return myLayout;
 		}
@@ -122,5 +126,26 @@ public class EmmetConfigurable extends SimpleConfigurable<EmmetConfigurable.Pane
 
 		char shortcut = (char) emmetOptions.getEmmetExpandShortcut();
 		panel.myEmmetExpandShortcutCombo.setValue(shortcut);
+	}
+
+	@Nonnull
+	@Override
+	public String getId()
+	{
+		return "editor.emmet";
+	}
+
+	@Nullable
+	@Override
+	public String getParentId()
+	{
+		return StandardConfigurableIds.EDITOR_GROUP;
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Emmet";
 	}
 }

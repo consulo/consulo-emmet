@@ -23,41 +23,4 @@
 	<tags>
 		<tag>editor.extension</tag>
 	</tags>
-
-	<extensionPoints>
-		<extensionPoint name="codingGenerator" interface="com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator"/>
-		<extensionPoint name="codingFilter" interface="com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter"/>
-	</extensionPoints>
-
-	<extensions defaultExtensionNs="consulo.emmet">
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.XslZenCodingFilter"/>
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.CommentZenCodingFilter"/>
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.EscapeZenCodingFilter"/>
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.SingleLineEmmetFilter"/>
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.BemEmmetFilter"/>
-		<codingFilter implementation="com.intellij.codeInsight.template.emmet.filters.TrimZenCodingFilter"/>
-	</extensions>
-
-	<extensions defaultExtensionNs="com.intellij">
-		<applicationConfigurable
-				id="editor.emmet"
-				parentId="editor"
-				displayName="Emmet"
-				instance="com.intellij.application.options.emmet.EmmetConfigurable"/>
-
-		<applicationConfigurable
-				id="editor.emmet.xml"
-				parentId="editor.emmet"
-				displayName="XML/HTML"
-				instance="com.intellij.application.options.emmet.XmlEmmetConfigurable"/>
-
-		<applicationService serviceInterface="com.intellij.application.options.emmet.EmmetOptions"
-							serviceImplementation="com.intellij.application.options.emmet.EmmetOptions"/>
-
-
-		<applicationService serviceInterface="com.intellij.application.options.emmet.XmlEmmetOptions"
-							serviceImplementation="com.intellij.application.options.emmet.XmlEmmetOptions"/>
-
-		<customLiveTemplate implementation="com.intellij.codeInsight.template.emmet.ZenCodingTemplate"/>
-	</extensions>
 </consulo-plugin>

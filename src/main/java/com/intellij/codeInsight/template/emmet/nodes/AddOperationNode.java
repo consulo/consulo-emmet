@@ -15,12 +15,11 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
+import consulo.language.editor.template.CustomTemplateCallback;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author Eugene.Kudelevsky
@@ -50,7 +49,7 @@ public class AddOperationNode extends ZenCodingNode
 	@Override
 	public List<ZenCodingNode> getChildren()
 	{
-		return ContainerUtil.newLinkedList(myLeftOperand, myRightOperand);
+		return List.of(myLeftOperand, myRightOperand);
 	}
 
 	@NotNull

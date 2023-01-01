@@ -15,26 +15,24 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import com.google.common.base.Joiner;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.emmet.ZenCodingUtil;
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.text.StringUtil;
+import consulo.language.editor.template.CustomTemplateCallback;
+import consulo.language.editor.template.Template;
+import consulo.util.lang.Couple;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Eugene.Kudelevsky
  */
 public class TemplateNode extends ZenCodingNode
 {
-	private static final Joiner JOINER = Joiner.on(",");
 	private final TemplateToken myTemplateToken;
 	@Nullable
 	private final ZenCodingGenerator myGenerator;
@@ -72,7 +70,7 @@ public class TemplateNode extends ZenCodingNode
 			String newTemplateKey = ZenCodingUtil.replaceMarkers(templateKey, numberInIteration, totalIterations, surroundedText);
 			TemplateToken newTemplateToken = new TemplateToken(newTemplateKey, templateToken.getAttribute2Value());
 
-			TemplateImpl template = myGenerator.createTemplateByKey(newTemplateKey);
+			Template template = myGenerator.createTemplateByKey(newTemplateKey);
 			if(template != null)
 			{
 				template.setDeactivated(true);
@@ -93,7 +91,7 @@ public class TemplateNode extends ZenCodingNode
 		List<Couple<String>> attributes = myTemplateToken.getAttribute2Value();
 		if(!attributes.isEmpty())
 		{
-			result += "[" + JOINER.join(myTemplateToken.getAttribute2Value()) + "]";
+			result += "[" + StringUtil.join(myTemplateToken.getAttribute2Value(), ",") + "]";
 		}
 		return "Template(" + result + ")";
 	}

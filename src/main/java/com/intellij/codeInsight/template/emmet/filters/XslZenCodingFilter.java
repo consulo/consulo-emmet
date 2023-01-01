@@ -15,23 +15,25 @@
  */
 package com.intellij.codeInsight.template.emmet.filters;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import com.intellij.codeInsight.template.XslTextContextType;
 import com.intellij.codeInsight.template.emmet.generators.XmlZenCodingGenerator;
 import com.intellij.codeInsight.template.emmet.generators.XmlZenCodingGeneratorImpl;
 import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlDocument;
-import com.intellij.psi.xml.XmlTag;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.application.ApplicationManager;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.Pair;
+import consulo.xml.codeInsight.template.XslTextContextType;
+import consulo.xml.psi.xml.XmlAttribute;
+import consulo.xml.psi.xml.XmlDocument;
+import consulo.xml.psi.xml.XmlTag;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Eugene.Kudelevsky
  */
+@ExtensionImpl
 public class XslZenCodingFilter extends ZenCodingFilter
 {
 	private final XmlZenCodingGenerator myDelegate = new XmlZenCodingGeneratorImpl();

@@ -15,25 +15,25 @@
  */
 package com.intellij.codeInsight.template.emmet.tokens;
 
+import consulo.language.editor.template.CustomTemplateCallback;
+import consulo.language.editor.template.Template;
+import consulo.language.psi.PsiFileFactory;
+import consulo.undoRedo.util.UndoConstants;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.Couple;
+import consulo.util.lang.LocalTimeCounter;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.xml.ide.highlighter.XmlFileType;
+import consulo.xml.psi.XmlElementFactory;
+import consulo.xml.psi.xml.XmlAttribute;
+import consulo.xml.psi.xml.XmlFile;
+import consulo.xml.psi.xml.XmlTag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.ide.highlighter.XmlFileType;
-import com.intellij.openapi.command.undo.UndoConstants;
-import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.XmlElementFactory;
-import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlFile;
-import com.intellij.psi.xml.XmlTag;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.LocalTimeCounter;
 
 /**
  * @author Eugene.Kudelevsky
@@ -44,7 +44,7 @@ public class TemplateToken extends ZenCodingToken
 	public final static TemplateToken EMPTY_TEMPLATE_TOKEN = new TemplateToken("", new ArrayList<Couple<String>>());
 
 	private final String myKey;
-	private TemplateImpl myTemplate;
+	private Template myTemplate;
 	private final List<Couple<String>> myAttribute2Value;
 	private XmlFile myFile;
 
@@ -79,7 +79,7 @@ public class TemplateToken extends ZenCodingToken
 		return myKey;
 	}
 
-	public boolean setTemplate(TemplateImpl template, CustomTemplateCallback callback)
+	public boolean setTemplate(Template template, CustomTemplateCallback callback)
 	{
 		myTemplate = template;
 		final XmlFile xmlFile = parseXmlFileInTemplate(template, callback, getAttribute2Value());
@@ -93,7 +93,7 @@ public class TemplateToken extends ZenCodingToken
 	}
 
 
-	private static boolean containsAttrsVar(TemplateImpl template)
+	private static boolean containsAttrsVar(Template template)
 	{
 		for(int i = 0; i < template.getVariableCount(); i++)
 		{
@@ -107,8 +107,7 @@ public class TemplateToken extends ZenCodingToken
 	}
 
 	@NotNull
-	private static XmlFile parseXmlFileInTemplate(
-			TemplateImpl template, CustomTemplateCallback callback, List<Couple<String>> attributes)
+	private static XmlFile parseXmlFileInTemplate( Template template, CustomTemplateCallback callback, List<Couple<String>> attributes)
 	{
 		XmlTag dummyRootTag = null;
 		String templateString = template.getString();
@@ -168,7 +167,7 @@ public class TemplateToken extends ZenCodingToken
 	}
 
 	@Nullable
-	public TemplateImpl getTemplate()
+	public Template getTemplate()
 	{
 		return myTemplate;
 	}

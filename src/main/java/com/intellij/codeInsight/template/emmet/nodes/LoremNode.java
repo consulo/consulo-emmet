@@ -15,15 +15,16 @@
  */
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.emmet.generators.LoremGenerator;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.openapi.util.Couple;
+import consulo.language.editor.template.CustomTemplateCallback;
+import consulo.language.editor.template.Template;
+import consulo.language.editor.template.TemplateBuilderFactory;
+import consulo.util.lang.Couple;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Eugene.Kudelevsky
@@ -49,10 +50,8 @@ public class LoremNode extends ZenCodingNode
 			boolean insertSurroundedTextAtTheEnd,
 			GenerationNode parent)
 	{
-
-
 		final TemplateToken templateToken = new TemplateToken("", Collections.<Couple<String>>emptyList());
-		final TemplateImpl template = new TemplateImpl("", myLoremGenerator.generate(myWordsCount, numberInIteration <= 0), "");
+		final Template template = TemplateBuilderFactory.getInstance().createRawTemplate("", myLoremGenerator.generate(myWordsCount, numberInIteration <= 0), "");
 		templateToken.setTemplate(template, callback);
 		final GenerationNode node = new GenerationNode(templateToken, numberInIteration, totalIterations, surroundedText,
 				insertSurroundedTextAtTheEnd, parent);

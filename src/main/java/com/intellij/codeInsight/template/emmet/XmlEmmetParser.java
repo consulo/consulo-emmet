@@ -15,46 +15,29 @@
  */
 package com.intellij.codeInsight.template.emmet;
 
-import static com.intellij.openapi.util.text.StringUtil.startsWithIgnoreCase;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
+import com.intellij.codeInsight.template.emmet.nodes.*;
+import com.intellij.codeInsight.template.emmet.tokens.*;
+import com.intellij.xml.util.HtmlUtil;
+import consulo.language.editor.template.CustomTemplateCallback;
+import consulo.language.editor.template.Template;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.lang.Couple;
+import consulo.util.lang.StringUtil;
+import consulo.xml.psi.XmlElementFactory;
+import consulo.xml.psi.xml.XmlAttribute;
+import consulo.xml.psi.xml.XmlTag;
+import consulo.xml.psi.xml.XmlTokenType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.google.common.base.Strings;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
-import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
-import com.intellij.codeInsight.template.emmet.nodes.LoremNode;
-import com.intellij.codeInsight.template.emmet.nodes.MoreOperationNode;
-import com.intellij.codeInsight.template.emmet.nodes.MulOperationNode;
-import com.intellij.codeInsight.template.emmet.nodes.TemplateNode;
-import com.intellij.codeInsight.template.emmet.nodes.ZenCodingNode;
-import com.intellij.codeInsight.template.emmet.tokens.IdentifierToken;
-import com.intellij.codeInsight.template.emmet.tokens.NumberToken;
-import com.intellij.codeInsight.template.emmet.tokens.OperationToken;
-import com.intellij.codeInsight.template.emmet.tokens.StringLiteralToken;
-import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
-import com.intellij.codeInsight.template.emmet.tokens.TextToken;
-import com.intellij.codeInsight.template.emmet.tokens.ZenCodingToken;
-import com.intellij.codeInsight.template.emmet.tokens.ZenCodingTokens;
-import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.XmlElementFactory;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlTag;
-import com.intellij.psi.xml.XmlTokenType;
-import com.intellij.util.containers.Stack;
-import com.intellij.xml.util.HtmlUtil;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static consulo.util.lang.StringUtil.startsWithIgnoreCase;
 
 /**
  * User: zolotov
@@ -168,7 +151,7 @@ public class XmlEmmetParser extends EmmetParser
 			return null;
 		}
 
-		TemplateImpl template = myCallback.findApplicableTemplate(templateKey);
+		Template template = myCallback.findApplicableTemplate(templateKey);
 		if(template == null && !ZenCodingUtil.isXML11ValidQName(templateKey) && !StringUtil.containsChar(templateKey, '$'))
 		{
 			return null;
@@ -200,7 +183,7 @@ public class XmlEmmetParser extends EmmetParser
 	{
 		String parentTag = getParentTag(leftPart);
 		boolean hasParent = false;
-		if(!Strings.isNullOrEmpty(parentTag))
+		if(!StringUtil.isEmpty(parentTag))
 		{
 			hasParent = true;
 			tagLevel.push(parentTag);
@@ -260,7 +243,7 @@ public class XmlEmmetParser extends EmmetParser
 			if(!attrList.isEmpty() || isRepeating)
 			{
 				String wrapTag = suggestTagName();
-				TemplateImpl template = myCallback.findApplicableTemplate(templateKey);
+				Template template = myCallback.findApplicableTemplate(templateKey);
 				if(template == null && !ZenCodingUtil.isXML11ValidQName(templateKey))
 				{
 					return null;

@@ -1,14 +1,15 @@
 package com.intellij.codeInsight.template.emmet.nodes;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import com.intellij.codeInsight.template.CustomTemplateCallback;
 import com.intellij.codeInsight.template.emmet.ZenCodingUtil;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import com.intellij.codeInsight.template.emmet.tokens.TextToken;
-import com.intellij.codeInsight.template.impl.TemplateImpl;
+import consulo.language.editor.template.CustomTemplateCallback;
+import consulo.language.editor.template.Template;
+import consulo.language.editor.template.TemplateManager;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Eugene.Kudelevsky
@@ -37,7 +38,7 @@ public class TextNode extends ZenCodingNode
 		final boolean containsSurroundedTextMarker = ZenCodingUtil.containsSurroundedTextMarker(myText);
 
 		final String text = ZenCodingUtil.replaceMarkers(myText.replace("${nl}", "\n"), numberInIteration, totalIterations, surroundedText);
-		final TemplateImpl template = new TemplateImpl("", text, "");
+		final Template template = TemplateManager.getInstance(callback.getProject()).createTemplate("", text, "");
 		templateToken.setTemplate(template, callback);
 
 		final GenerationNode node = new GenerationNode(templateToken, numberInIteration, totalIterations,
