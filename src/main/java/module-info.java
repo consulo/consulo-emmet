@@ -19,6 +19,5 @@ module consulo.emmet
 	exports com.intellij.codeInsight.template.emmet.nodes;
 	exports com.intellij.codeInsight.template.emmet.tokens;
 	exports com.intellij.codeInsight.template.emmet.options;
-	exports consulo.emmet;
 	exports consulo.emmet.localize;
 }
