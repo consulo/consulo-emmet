@@ -206,7 +206,7 @@ public abstract class ZenCodingGenerator
 		return new XmlEmmetParser(tokens, callback, generator, surroundWithTemplate);
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public String getConfigurableId()
 	{
 		return null;

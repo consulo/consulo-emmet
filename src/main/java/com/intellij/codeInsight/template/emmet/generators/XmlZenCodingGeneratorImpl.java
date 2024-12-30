@@ -183,7 +183,7 @@ public class XmlZenCodingGeneratorImpl extends XmlZenCodingGenerator
 		return emptyTagEnd != null || endTagEnd != null;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	@Override
 	public String getConfigurableId()
 	{
