@@ -21,65 +21,59 @@ import consulo.configurable.ApplicationConfigurable;
 import consulo.configurable.SimpleConfigurableByProperties;
 import consulo.disposer.Disposable;
 import consulo.emmet.localize.EmmetLocalize;
+import consulo.localize.LocalizeValue;
 import consulo.ui.CheckBox;
 import consulo.ui.Component;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.layout.VerticalLayout;
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 /**
  * @author VISTALL
  * @since 23.08.13.
  */
 @ExtensionImpl
-public class XmlEmmetConfigurable extends SimpleConfigurableByProperties implements ApplicationConfigurable
-{
-	private final Provider<XmlEmmetOptions> myXmlEmmetOptionsProvider;
+public class XmlEmmetConfigurable extends SimpleConfigurableByProperties implements ApplicationConfigurable {
+    private final Provider<XmlEmmetOptions> myXmlEmmetOptionsProvider;
 
-	@Inject
-	public XmlEmmetConfigurable(Provider<XmlEmmetOptions> xmlEmmetOptionsProvider)
-	{
-		myXmlEmmetOptionsProvider = xmlEmmetOptionsProvider;
-	}
+    @Inject
+    public XmlEmmetConfigurable(Provider<XmlEmmetOptions> xmlEmmetOptionsProvider) {
+        myXmlEmmetOptionsProvider = xmlEmmetOptionsProvider;
+    }
 
-	@RequiredUIAccess
-	@Nonnull
-	@Override
-	protected Component createLayout(@Nonnull PropertyBuilder propertyBuilder, @Nonnull Disposable disposable)
-	{
-		XmlEmmetOptions xmlEmmetOptions = myXmlEmmetOptionsProvider.get();
+    @RequiredUIAccess
+    @Nonnull
+    @Override
+    protected Component createLayout(@Nonnull PropertyBuilder propertyBuilder, @Nonnull Disposable disposable) {
+        XmlEmmetOptions xmlEmmetOptions = myXmlEmmetOptionsProvider.get();
 
-		VerticalLayout rootLayout = VerticalLayout.create();
+        VerticalLayout rootLayout = VerticalLayout.create();
 
-		CheckBox enableBemFilter = CheckBox.create(EmmetLocalize.emmetEnableBemFilter());
-		rootLayout.add(enableBemFilter);
-		propertyBuilder.add(enableBemFilter, xmlEmmetOptions::isBemFilterEnabledByDefault, xmlEmmetOptions::setBemFilterEnabledByDefault);
+        CheckBox enableBemFilter = CheckBox.create(EmmetLocalize.emmetEnableBemFilter());
+        rootLayout.add(enableBemFilter);
+        propertyBuilder.add(enableBemFilter, xmlEmmetOptions::isBemFilterEnabledByDefault, xmlEmmetOptions::setBemFilterEnabledByDefault);
 
-		return rootLayout;
-	}
+        return rootLayout;
+    }
 
-	@Nonnull
-	@Override
-	public String getId()
-	{
-		return "editor.emmet.xml";
-	}
+    @Nonnull
+    @Override
+    public String getId() {
+        return "editor.emmet.xml";
+    }
 
-	@Nullable
-	@Override
-	public String getParentId()
-	{
-		return "editor.emmet";
-	}
+    @Nullable
+    @Override
+    public String getParentId() {
+        return "editor.emmet";
+    }
 
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return "XML/HTML";
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return EmmetLocalize.emmentXmlConfigurationTitle();
+    }
 }

@@ -22,7 +22,8 @@ import consulo.configurable.SimpleConfigurable;
 import consulo.configurable.StandardConfigurableIds;
 import consulo.disposer.Disposable;
 import consulo.emmet.localize.EmmetLocalize;
-import consulo.language.editor.CodeInsightBundle;
+import consulo.language.editor.localize.CodeInsightLocalize;
+import consulo.localize.LocalizeValue;
 import consulo.ui.CheckBox;
 import consulo.ui.ComboBox;
 import consulo.ui.Component;
@@ -32,11 +33,11 @@ import consulo.ui.border.BorderStyle;
 import consulo.ui.layout.Layout;
 import consulo.ui.layout.VerticalLayout;
 import consulo.ui.util.LabeledBuilder;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**
@@ -44,108 +45,96 @@ import java.util.function.Supplier;
  * Date: 2/20/13
  */
 @ExtensionImpl
-public class EmmetConfigurable extends SimpleConfigurable<EmmetConfigurable.Panel> implements Configurable, ApplicationConfigurable
-{
-	public static class Panel implements Supplier<Layout>
-	{
-		private final CheckBox myEnableEmmetCheckBox;
-		private final ComboBox<Character> myEmmetExpandShortcutCombo;
-		private final VerticalLayout myLayout;
+public class EmmetConfigurable extends SimpleConfigurable<EmmetConfigurable.Panel> implements Configurable, ApplicationConfigurable {
+    public static class Panel implements Supplier<Layout> {
+        private final CheckBox myEnableEmmetCheckBox;
+        private final ComboBox<Character> myEmmetExpandShortcutCombo;
+        private final VerticalLayout myLayout;
 
-		@RequiredUIAccess
-		public Panel()
-		{
-			myLayout = VerticalLayout.create();
-			myEnableEmmetCheckBox = CheckBox.create(EmmetLocalize.zenCodingEnableLabel());
-			myLayout.add(myEnableEmmetCheckBox);
+        @RequiredUIAccess
+        public Panel() {
+            myLayout = VerticalLayout.create();
+            myEnableEmmetCheckBox = CheckBox.create(EmmetLocalize.zenCodingEnableLabel());
+            myLayout.add(myEnableEmmetCheckBox);
 
-			ComboBox.Builder<Character> emmetExpandBox = ComboBox.builder();
-			emmetExpandBox.add('\t', CodeInsightBundle.message("template.shortcut.tab"));
-			emmetExpandBox.add('\n', CodeInsightBundle.message("template.shortcut.enter"));
-			emmetExpandBox.add(' ', CodeInsightBundle.message("template.shortcut.space"));
+            ComboBox.Builder<Character> emmetExpandBox = ComboBox.builder();
+            emmetExpandBox.add('\t', CodeInsightLocalize.templateShortcutTab());
+            emmetExpandBox.add('\n', CodeInsightLocalize.templateShortcutEnter());
+            emmetExpandBox.add(' ', CodeInsightLocalize.templateShortcutSpace());
 
-			myEmmetExpandShortcutCombo = emmetExpandBox.build();
-			myEmmetExpandShortcutCombo.selectFirst();
+            myEmmetExpandShortcutCombo = emmetExpandBox.build();
+            myEmmetExpandShortcutCombo.selectFirst();
 
-			Component labelExpand = LabeledBuilder.sided(EmmetLocalize.emmetExpandAbbreviationWith(), myEmmetExpandShortcutCombo);
-			labelExpand.addBorder(BorderPosition.LEFT, BorderStyle.EMPTY, 16);
-			myLayout.add(labelExpand);
+            Component labelExpand = LabeledBuilder.sided(EmmetLocalize.emmetExpandAbbreviationWith(), myEmmetExpandShortcutCombo);
+            labelExpand.addBorder(BorderPosition.LEFT, BorderStyle.EMPTY, 16);
+            myLayout.add(labelExpand);
 
-			myEnableEmmetCheckBox.addValueListener(valueEvent -> myEmmetExpandShortcutCombo.setEnabled(myEnableEmmetCheckBox.getValueOrError()));
-		}
+            myEnableEmmetCheckBox.addValueListener(valueEvent -> myEmmetExpandShortcutCombo.setEnabled(myEnableEmmetCheckBox.getValueOrError()));
+        }
 
-		@Nonnull
-		@Override
-		public Layout get()
-		{
-			return myLayout;
-		}
-	}
+        @Nonnull
+        @Override
+        public Layout get() {
+            return myLayout;
+        }
+    }
 
-	private final Provider<EmmetOptions> myEmmetOptionsProvider;
+    private final Provider<EmmetOptions> myEmmetOptionsProvider;
 
-	@Inject
-	public EmmetConfigurable(Provider<EmmetOptions> emmetOptionsProvider)
-	{
-		myEmmetOptionsProvider = emmetOptionsProvider;
-	}
+    @Inject
+    public EmmetConfigurable(Provider<EmmetOptions> emmetOptionsProvider) {
+        myEmmetOptionsProvider = emmetOptionsProvider;
+    }
 
-	@RequiredUIAccess
-	@Nonnull
-	@Override
-	protected Panel createPanel(@Nonnull Disposable disposable)
-	{
-		return new Panel();
-	}
+    @RequiredUIAccess
+    @Nonnull
+    @Override
+    protected Panel createPanel(@Nonnull Disposable disposable) {
+        return new Panel();
+    }
 
-	@RequiredUIAccess
-	@Override
-	public boolean isModified(@Nonnull Panel panel)
-	{
-		EmmetOptions emmetOptions = myEmmetOptionsProvider.get();
-		return emmetOptions.isEmmetEnabled() != panel.myEnableEmmetCheckBox.getValueOrError() ||
-				emmetOptions.getEmmetExpandShortcut() != panel.myEmmetExpandShortcutCombo.getValueOrError();
-	}
+    @RequiredUIAccess
+    @Override
+    public boolean isModified(@Nonnull Panel panel) {
+        EmmetOptions emmetOptions = myEmmetOptionsProvider.get();
+        return emmetOptions.isEmmetEnabled() != panel.myEnableEmmetCheckBox.getValueOrError() ||
+            emmetOptions.getEmmetExpandShortcut() != panel.myEmmetExpandShortcutCombo.getValueOrError();
+    }
 
-	@RequiredUIAccess
-	@Override
-	public void apply(@Nonnull Panel panel)
-	{
-		EmmetOptions emmetOptions = myEmmetOptionsProvider.get();
-		emmetOptions.setEmmetEnabled(panel.myEnableEmmetCheckBox.getValueOrError());
-		emmetOptions.setEmmetExpandShortcut(panel.myEmmetExpandShortcutCombo.getValueOrError());
-	}
+    @RequiredUIAccess
+    @Override
+    public void apply(@Nonnull Panel panel) {
+        EmmetOptions emmetOptions = myEmmetOptionsProvider.get();
+        emmetOptions.setEmmetEnabled(panel.myEnableEmmetCheckBox.getValueOrError());
+        emmetOptions.setEmmetExpandShortcut(panel.myEmmetExpandShortcutCombo.getValueOrError());
+    }
 
-	@RequiredUIAccess
-	@Override
-	public void reset(@Nonnull Panel panel)
-	{
-		EmmetOptions emmetOptions = myEmmetOptionsProvider.get();
-		panel.myEnableEmmetCheckBox.setValue(emmetOptions.isEmmetEnabled());
-		panel.myEmmetExpandShortcutCombo.setEnabled(emmetOptions.isEmmetEnabled());
+    @RequiredUIAccess
+    @Override
+    public void reset(@Nonnull Panel panel) {
+        EmmetOptions emmetOptions = myEmmetOptionsProvider.get();
+        panel.myEnableEmmetCheckBox.setValue(emmetOptions.isEmmetEnabled());
+        panel.myEmmetExpandShortcutCombo.setEnabled(emmetOptions.isEmmetEnabled());
 
-		char shortcut = (char) emmetOptions.getEmmetExpandShortcut();
-		panel.myEmmetExpandShortcutCombo.setValue(shortcut);
-	}
+        char shortcut = (char) emmetOptions.getEmmetExpandShortcut();
+        panel.myEmmetExpandShortcutCombo.setValue(shortcut);
+    }
 
-	@Nonnull
-	@Override
-	public String getId()
-	{
-		return "editor.emmet";
-	}
+    @Nonnull
+    @Override
+    public String getId() {
+        return "editor.emmet";
+    }
 
-	@Nullable
-	@Override
-	public String getParentId()
-	{
-		return StandardConfigurableIds.EDITOR_GROUP;
-	}
+    @Nullable
+    @Override
+    public String getParentId() {
+        return StandardConfigurableIds.EDITOR_GROUP;
+    }
 
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return "Emmet";
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return EmmetLocalize.emmetConfigurationTitle();
+    }
 }
