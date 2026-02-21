@@ -454,7 +454,7 @@ public class ZenCodingTemplate extends CustomLiveTemplateBase
 		if(generator == null)
 		{
 			int offset = callback.getEditor().getCaretModel().getOffset();
-			LOG.error("Emmet is disabled for context for file " + callback.getFileType().getName() + " in offset: " + offset,
+			LOG.error("Emmet is disabled for context for file " + callback.getFileType().getId() + " in offset: " + offset,
 					AttachmentFactoryUtil.createAttachment(callback.getEditor().getDocument()));
 			return false;
 		}
