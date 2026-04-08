@@ -18,7 +18,7 @@ package com.intellij.codeInsight.template.emmet.filters;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
-import consulo.xml.lang.xml.XMLLanguage;
+import consulo.xml.language.XMLLanguage;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -24,9 +24,9 @@ import consulo.application.ApplicationManager;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.Pair;
 import consulo.xml.codeInsight.template.XslTextContextType;
-import consulo.xml.psi.xml.XmlAttribute;
-import consulo.xml.psi.xml.XmlDocument;
-import consulo.xml.psi.xml.XmlTag;
+import consulo.xml.language.psi.XmlAttribute;
+import consulo.xml.language.psi.XmlDocument;
+import consulo.xml.language.psi.XmlTag;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 

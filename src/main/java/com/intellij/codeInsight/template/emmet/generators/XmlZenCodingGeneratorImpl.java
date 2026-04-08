@@ -33,10 +33,10 @@ import consulo.virtualFileSystem.fileType.FileType;
 import consulo.xml.codeInsight.template.HtmlTextContextType;
 import consulo.xml.ide.highlighter.HtmlFileType;
 import consulo.xml.ide.highlighter.XHtmlFileType;
-import consulo.xml.lang.xml.XMLLanguage;
-import consulo.xml.psi.XmlRecursiveElementVisitor;
-import consulo.xml.psi.xml.XmlChildRole;
-import consulo.xml.psi.xml.XmlTag;
+import consulo.xml.language.XMLLanguage;
+import consulo.xml.language.psi.XmlChildRole;
+import consulo.xml.language.psi.XmlRecursiveElementVisitor;
+import consulo.xml.language.psi.XmlTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +59,7 @@ public class XmlZenCodingGeneratorImpl extends XmlZenCodingGenerator
 	@Override
 	@NotNull
 	public String toString(
-			@NotNull XmlTag tag, @NotNull List<Couple<String>> attribute2Value, boolean hasChildren, @NotNull PsiElement context)
+        @NotNull XmlTag tag, @NotNull List<Couple<String>> attribute2Value, boolean hasChildren, @NotNull PsiElement context)
 	{
 		FileType fileType = context.getContainingFile().getFileType();
 		if(isTrueXml(fileType))

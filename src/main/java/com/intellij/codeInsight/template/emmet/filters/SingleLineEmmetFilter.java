@@ -21,7 +21,7 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.language.editor.template.Template;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.StringUtil;
-import consulo.xml.lang.xml.XMLLanguage;
+import consulo.xml.language.XMLLanguage;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -4,11 +4,11 @@ import com.intellij.codeInsight.template.emmet.nodes.GenerationNode;
 import com.intellij.codeInsight.template.emmet.tokens.TemplateToken;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
-import consulo.xml.lang.xml.XMLLanguage;
-import consulo.xml.psi.XmlElementVisitor;
-import consulo.xml.psi.xml.XmlDocument;
-import consulo.xml.psi.xml.XmlTag;
-import consulo.xml.psi.xml.XmlTagValue;
+import consulo.xml.language.XMLLanguage;
+import consulo.xml.language.psi.XmlDocument;
+import consulo.xml.language.psi.XmlElementVisitor;
+import consulo.xml.language.psi.XmlTag;
+import consulo.xml.language.psi.XmlTagValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;

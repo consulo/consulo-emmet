@@ -43,9 +43,8 @@ import consulo.util.lang.LocalTimeCounter;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.xml.ide.highlighter.XmlFileType;
-import consulo.xml.lang.xml.XMLLanguage;
-import consulo.xml.psi.XmlElementFactory;
-import consulo.xml.psi.xml.*;
+import consulo.xml.language.XMLLanguage;
+import consulo.xml.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
