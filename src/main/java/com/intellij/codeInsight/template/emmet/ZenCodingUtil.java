@@ -17,11 +17,11 @@ package com.intellij.codeInsight.template.emmet;
 
 import com.intellij.codeInsight.template.emmet.filters.ZenCodingFilter;
 import com.intellij.codeInsight.template.emmet.generators.ZenCodingGenerator;
+import consulo.html.language.HtmlFileType;
 import consulo.language.editor.template.CustomTemplateCallback;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.fileType.FileType;
-import consulo.xml.ide.highlighter.HtmlFileType;
-import consulo.xml.ide.highlighter.XHtmlFileType;
+import consulo.xhtml.language.XHtmlFileType;
 import org.apache.xerces.util.XML11Char;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

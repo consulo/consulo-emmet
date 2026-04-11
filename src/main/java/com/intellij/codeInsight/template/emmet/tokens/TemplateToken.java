@@ -23,7 +23,7 @@ import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.Couple;
 import consulo.util.lang.LocalTimeCounter;
 import consulo.virtualFileSystem.VirtualFile;
-import consulo.xml.ide.highlighter.XmlFileType;
+import consulo.xml.language.XmlFileType;
 import consulo.xml.language.psi.XmlAttribute;
 import consulo.xml.language.psi.XmlElementFactory;
 import consulo.xml.language.psi.XmlFile;
