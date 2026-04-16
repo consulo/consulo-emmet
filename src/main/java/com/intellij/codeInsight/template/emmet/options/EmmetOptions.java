@@ -21,7 +21,7 @@ import consulo.annotation.component.ServiceImpl;
 import consulo.component.persist.PersistentStateComponent;
 import consulo.component.persist.State;
 import consulo.component.persist.Storage;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.util.xml.serializer.XmlSerializerUtil;
 import jakarta.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +40,7 @@ public class EmmetOptions implements PersistentStateComponent<EmmetOptions>
 	@NotNull
 	public static EmmetOptions getInstance()
 	{
-		return ServiceManager.getService(EmmetOptions.class);
+		return Application.get().getInstance(EmmetOptions.class);
 	}
 
 	private boolean myEmmetEnabled = true;

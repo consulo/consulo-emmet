@@ -6,7 +6,11 @@ module consulo.emmet {
     // TODO remove in future
     requires java.desktop;
 
-    requires consulo.ide.api;
+    requires consulo.language.editor.api;
+    requires consulo.configurable.api;
+    requires consulo.ui.ex.api;
+    requires consulo.ui.ex.awt.api;
+    requires consulo.language.impl;
 
     requires com.google.common;
 

@@ -22,7 +22,7 @@ import consulo.annotation.component.ServiceImpl;
 import consulo.component.persist.PersistentStateComponent;
 import consulo.component.persist.State;
 import consulo.component.persist.Storage;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.util.xml.serializer.XmlSerializerUtil;
 import jakarta.inject.Singleton;
 
@@ -42,7 +42,7 @@ public class XmlEmmetOptions implements PersistentStateComponent<XmlEmmetOptions
 	@Nonnull
 	public static XmlEmmetOptions getInstance()
 	{
-		return ServiceManager.getService(XmlEmmetOptions.class);
+		return Application.get().getInstance(XmlEmmetOptions.class);
 	}
 
 	private boolean myBemFilterEnabledByDefault = false;
