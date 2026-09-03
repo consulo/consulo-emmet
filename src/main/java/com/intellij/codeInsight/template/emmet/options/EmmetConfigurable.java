@@ -28,10 +28,9 @@ import consulo.ui.CheckBox;
 import consulo.ui.ComboBox;
 import consulo.ui.Component;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.border.BorderPosition;
-import consulo.ui.border.BorderStyle;
 import consulo.ui.layout.Layout;
 import consulo.ui.layout.VerticalLayout;
+import consulo.ui.util.Indenter;
 import consulo.ui.util.LabeledBuilder;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -66,8 +65,7 @@ public class EmmetConfigurable extends SimpleConfigurable<EmmetConfigurable.Pane
             myEmmetExpandShortcutCombo.selectFirst();
 
             Component labelExpand = LabeledBuilder.sided(EmmetLocalize.emmetExpandAbbreviationWith(), myEmmetExpandShortcutCombo);
-            labelExpand.addBorder(BorderPosition.LEFT, BorderStyle.EMPTY, 16);
-            myLayout.add(labelExpand);
+            myLayout.add(Indenter.indent(labelExpand));
 
             myEnableEmmetCheckBox.addValueListener(valueEvent -> myEmmetExpandShortcutCombo.setEnabled(myEnableEmmetCheckBox.getValueOrError()));
         }
